@@ -22,23 +22,27 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   def reload_timeline
-    @timeline = load_timeline
-    @timeline_stack.clear &populate_timeline
-  end
-  
-  ###
-  
-  def create_timeline_fixture!
-    File.open timeline_fixture_path, "w+" do |f|
-      f.puts twitter.timeline.to_yaml
+    @timeline = nil
+    @timeline_stack.clear do
+      if timeline.any?
+        timeline.each do |s|
+          flow do
+            set_background s.user
+            flow :width => -(45 + gutter) do
+              para(*(autolink(s.text) + [:size => 9, :margin => 5, :margin_bottom => 0]))
+            end
+            flow :width => 45 do
+              image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5
+            end
+          end
+        end
+      else # Twitter is down
+        # image "http://static.twitter.com/images/whale.png", :width => "100%"
+        para *Hpricot(open("http://twitter.com")).at("#content").to_s.scan(/>([^<]+)</).
+          flatten.reject { |x| x =~ /^\s*$/ }.map { |x| x.squeeze(" ").strip }.join(" ")
+      end
     end
   end
-  
-  def timeline_fixture_path
-    File.join Dir.pwd, "timeline"
-  end
-  
-  ###
   
   def autolink(status)
     status.strip.scan(/(\S+)(\s+)?/).flatten.map do |token|
@@ -76,23 +80,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     end
   end
   
-  ###
-  
-  populate_timeline = proc do
-    timeline.each do |s|
-      flow do
-        set_background s.user
-        flow :width => -(45 + gutter) do
-          para(*(autolink(s.text) + [:size => 9, :margin => 5, :margin_bottom => 0]))
-        end
-        flow :width => 45 do
-          image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5
-        end
-      end
-    end
-  end
-  
-  ###
+  ### LET THE APP BEGIN!!
   
   background white
   
@@ -113,7 +101,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     focus
   end
   
-  button "+" do
+  @submit = button "+" do
     twitter.update @status.text
     reload_timeline
     @status.reset
@@ -121,13 +109,26 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   para @counter, :size => 9, :margin => 0
   
-  @timeline_stack = stack &populate_timeline
+  @timeline_stack = stack
+  reload_timeline
   
-  ###
+  ### BEGIN THE INIT CODE!!
   
   @status.reset
   timer 60 do
     alert "reloading timeline!"
     reload_timeline
+  end
+  
+  ### AND NOW SOME STUFF FOR LOCAL DEVELOPMENT!
+  
+  def create_timeline_fixture!
+    File.open timeline_fixture_path, "w+" do |f|
+      f.puts twitter.timeline.to_yaml
+    end
+  end
+  
+  def timeline_fixture_path
+    File.join Dir.pwd, "timeline"
   end
 end
