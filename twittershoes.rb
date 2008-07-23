@@ -23,6 +23,8 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     File.join Dir.pwd, "timeline"
   end
   
+  ## ERRRRRORRRRRR HANDLLLLLINNNGG!! (say in the voice of Jon Lovitz as The Thespian)
+  
   def timeout(seconds = 1, &block)
     Timeout.timeout(seconds, &block)
   end
@@ -30,8 +32,6 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   def timeout_error
     Timeout::TimeoutError
   end
-  
-  ### NOW, ON WITH THE SHOW!
   
   def twitter_down!
     fail_whale
@@ -41,6 +41,21 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       para "Twitter is down. :("
     end
   end
+  
+  def fail_whale
+    image "http://static.twitter.com/images/whale.png",
+      :width => 275, :height => 200, :margin => 5
+  end
+  
+  # Assuming that the maintenance page is up..
+  def maintenance_message
+    para *Hpricot(open("http://twitter.com")).at("#content").
+      to_s.scan(/>([^<]+)</).flatten. # XXX poor man's "get all descendant text nodes"
+      reject { |x| x =~ /^\s*$/ }.    # except stuff that is just whitespace
+      map { |x| x.squeeze(" ").strip }.join(" ")
+  end
+  
+  ### NOW, ON VITH ZE SHOW!
   
   def twitter
     @twitter ||= timeout { Twitter::Base.new *File.readlines("cred").map(&:strip) }
@@ -94,19 +109,6 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     end
   end
   
-  def fail_whale
-    image "http://static.twitter.com/images/whale.png",
-      :width => 275, :height => 200, :margin => 5
-  end
-  
-  # Assuming that the maintenance page is up..
-  def maintenance_message
-    para *Hpricot(open("http://twitter.com")).at("#content").
-      to_s.scan(/>([^<]+)</).flatten. # XXX poor man's "get all descendant text nodes"
-      reject { |x| x =~ /^\s*$/ }.    # except stuff that is just whitespace
-      map { |x| x.squeeze(" ").strip }.join(" ")
-  end
-  
   ###
   
   def set_background(user)
@@ -145,7 +147,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     end
   end
   
-  ### LET THE APP BEGIN!!
+  ### LET ZE APP BEGIN!!
   
   background white
   
@@ -177,7 +179,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   @timeline_stack = stack
   reload_timeline
   
-  ### BEGIN THE INIT CODE!!
+  ### BEGIN ZE INIT CODE!!
   
   @status.reset
   
