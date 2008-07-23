@@ -6,23 +6,74 @@ require "timeout"
 require "twitter"
 
 Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable => false do
+  
+  ### SOME STUFF FOR LOCAL DEVELOPMENT!
+  
+  def create_timeline_fixture!
+    File.open(timeline_fixture_path, "w+") { |f| f.puts twitter.timeline.to_yaml }
+  end
+  
+  def update_timeline_fixture!(status)
+    File.open(timeline_fixture_path, "w+") { |f| f.puts (timeline[1..-1] << status).to_yaml }
+    
+    raise "Timeline failed to update" unless timeline.first == status
+  end
+  
+  def timeline_fixture_path
+    File.join Dir.pwd, "timeline"
+  end
+  
+  def timeout(seconds = 1, &block)
+    Timeout.timeout(seconds, &block)
+  end
+  
+  def timeout_error
+    Timeout::TimeoutError
+  end
+  
+  ### NOW, ON WITH THE SHOW!
+  
+  def twitter_down!
+    fail_whale
+    begin
+      timeout { maintenance_message }
+    rescue timeout_error
+      para "Twitter is down. :("
+    end
+  end
+  
   def twitter
-    @twitter ||= Twitter::Base.new "greatseth", "skippy"
+    @twitter ||= timeout { Twitter::Base.new *File.readlines("cred").map(&:strip) }
+  rescue timeout_error
+    twitter_down!
+  end
+  
+  def update_status
+    # twitter.update @status.text
+    
+    update_timeline_fixture!(
+      Twitter::Status.new do |s|
+        s.text = @status.text
+        s.user = timeline.first.user
+        s.created_at = Time.new
+        s.id = timeline.first.id.to_i + 1
+      end
+    )
   end
   
   def timeline
-    @timeline ||= load_timeline
-  end
-  
-  def load_timeline
-    twitter.timeline[0..9]
+    # twitter.timeline[0..9]
     
-    # create_timeline_fixture! unless File.exist? timeline_fixture_path
-    # YAML.load_file(timeline_fixture_path)[0..9]
+    create_timeline_fixture! unless File.exist? timeline_fixture_path
+    
+    if array = YAML.load_file(timeline_fixture_path)
+      array[0..9]
+    else
+      raise "Timeline fixture is empty!"
+    end
   end
   
   def reload_timeline
-    alert "reloading timeline!"
     @timeline = nil
     @timeline_stack.clear do
       if timeline.any?
@@ -38,9 +89,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
           end
         end
       else
-        # Twitter is down
-        fail_whale
-        maintenance_message
+        twitter_down!
       end
     end
   end
@@ -118,7 +167,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   @submit = button "+" do
-    twitter.update @status.text
+    update_status
     reload_timeline
     @status.reset
   end
@@ -131,19 +180,12 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   ### BEGIN THE INIT CODE!!
   
   @status.reset
+  
+  # keypress do |k|
+  #   @submit.click if k == "\n"
+  # end
+  
   timer 60 do
     reload_timeline
-  end
-  
-  ### AND NOW SOME STUFF FOR LOCAL DEVELOPMENT!
-  
-  def create_timeline_fixture!
-    File.open timeline_fixture_path, "w+" do |f|
-      f.puts twitter.timeline.to_yaml
-    end
-  end
-  
-  def timeline_fixture_path
-    File.join Dir.pwd, "timeline"
   end
 end
