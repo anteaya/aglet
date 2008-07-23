@@ -10,7 +10,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   ### SOME STUFF FOR LOCAL DEVELOPMENT!
   
   def testing_ui?
-    true
+    # true
   end
   
   if testing_ui?
@@ -29,17 +29,13 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     Timeout.timeout(seconds, &block)
   end
   
-  def timeout_error
-    Timeout::TimeoutError
+  def twitter_errors
+    [Timeout::Error, ::Twitter::CantConnect]
   end
   
   def twitter_down!
     fail_whale
-    begin
-      timeout { maintenance_message }
-    rescue timeout_error
-      para "Twitter is down down down. :("
-    end
+    maintenance_message
   end
   
   def fail_whale
@@ -49,18 +45,23 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   # Assuming that the maintenance page is up..
   def maintenance_message
-    para *Hpricot(open("http://twitter.com")).at("#content").
+    para *Hpricot(timeout { open("http://twitter.com") }).at("#content").
       to_s.scan(/>([^<]+)</).flatten. # XXX poor man's "get all descendant text nodes"
       reject { |x| x =~ /^\s*$/ }.    # except stuff that is just whitespace
       map { |x| x.squeeze(" ").strip }.join(" ")
+  rescue Object => e
+    para "Twitter is down down down. :("
+    para e.message
   end
   
   ### NOW, ON VITH ZE SHOW!
   
   def twitter
-    @twitter ||= timeout { Twitter::Base.new *File.readlines("cred").map(&:strip) }
-  rescue timeout_error
-    twitter_down!
+    @twitter ||= begin
+      timeout { Twitter::Base.new *File.readlines("cred").map(&:strip) }
+    rescue *twitter_errors
+    end
+    twitter_down! unless @twitter
   end
   
   def update_status
@@ -75,17 +76,28 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       timeline = [status] + @timeline[0..-2]
       update_fixture_file timeline
     else
-      status = twitter.update @status.text
+      status = begin
+        timeout { twitter.update @status.text }
+      rescue *twitter_errors
+      end
     end
     
     reload_timeline
+    reset_status
     
-    raise "Timeline failed to update #{caller * "\n"}" unless @timeline.first == status
+    raise "Timeline failed to update #{caller * "\n"}" unless status == @timeline.first
   end
   
   def load_timeline
-    @timeline = (testing_ui? ? YAML.load_file(timeline_fixture_path) : twitter.timeline) || []
-    @timeline[0..9]
+    @timeline = if testing_ui?
+      YAML.load_file(timeline_fixture_path)
+    elsif twitter
+      begin
+        twitter.timeline
+      rescue *twitter_errors
+      end
+    end || []
+    @timeline = @timeline[0..9]
   end
   
   def reload_timeline
@@ -147,6 +159,11 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     end
   end
   
+  def reset_status
+    @status.text = ""
+    @status.focus
+  end
+  
   ### LET ZE APP BEGIN!!
   
   update_fixture_file twitter.timeline if testing_ui? and not File.exist?(timeline_fixture_path)
@@ -165,28 +182,15 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     @counter.style :stroke => (s.text.size > recommended_status_length ? red : black)
   end
   
-  def @status.reset
-    self.text = ""
-    focus
-  end
-  
   @submit = button "+" do
     update_status
-    @status.reset
   end
   
   para @counter, :size => 9, :margin => 0
   
   @timeline_stack = stack
   reload_timeline
-  
-  ### BEGIN ZE INIT CODE!!
-  
-  @status.reset
-  
-  # keypress do |k|
-  #   @submit.click if k == "\n"
-  # end
+  reset_status
   
   timer 60 do
     reload_timeline
