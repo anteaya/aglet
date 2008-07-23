@@ -22,6 +22,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   def reload_timeline
+    alert "reloading timeline!"
     @timeline = nil
     @timeline_stack.clear do
       if timeline.any?
@@ -36,25 +37,28 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
             end
           end
         end
-      else # Twitter is down
-        # image "http://static.twitter.com/images/whale.png", :width => "100%"
-        para *Hpricot(open("http://twitter.com")).at("#content").to_s.scan(/>([^<]+)</).
-          flatten.reject { |x| x =~ /^\s*$/ }.map { |x| x.squeeze(" ").strip }.join(" ")
+      else
+        # Twitter is down
+        fail_whale
+        maintenance_message
       end
     end
   end
   
-  def autolink(status)
-    status.strip.scan(/(\S+)(\s+)?/).flatten.map do |token|
-      case token
-      when /@\S+/
-        link token, :click => "http://twitter.com/#{token[1..-1]}"
-      when /http:\/\/\S+/
-        link token, :click => token
-      else token
-      end
-    end
+  def fail_whale
+    image "http://static.twitter.com/images/whale.png",
+      :width => 275, :height => 200, :margin => 5
   end
+  
+  # Assuming that the maintenance page is up..
+  def maintenance_message
+    para *Hpricot(open("http://twitter.com")).at("#content").
+      to_s.scan(/>([^<]+)</).flatten. # XXX poor man's "get all descendant text nodes"
+      reject { |x| x =~ /^\s*$/ }.    # except stuff that is just whitespace
+      map { |x| x.squeeze(" ").strip }.join(" ")
+  end
+  
+  ###
   
   def set_background(user)
     # begin
@@ -77,6 +81,18 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       false
     else
       true
+    end
+  end
+  
+  def autolink(status)
+    status.strip.scan(/(\S+)(\s+)?/).flatten.map do |token|
+      case token
+      when /@\S+/
+        link token, :click => "http://twitter.com/#{token[1..-1]}"
+      when /http:\/\/\S+/
+        link token, :click => token
+      else token
+      end
     end
   end
   
@@ -116,7 +132,6 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   @status.reset
   timer 60 do
-    alert "reloading timeline!"
     reload_timeline
   end
   
