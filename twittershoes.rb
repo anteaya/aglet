@@ -15,14 +15,15 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   def load_timeline
-    # twitter.timeline[0..9]
+    twitter.timeline[0..9]
     
-    create_timeline_fixture! unless File.exist? timeline_fixture_path
-    YAML.load_file(timeline_fixture_path)[0..9]
+    # create_timeline_fixture! unless File.exist? timeline_fixture_path
+    # YAML.load_file(timeline_fixture_path)[0..9]
   end
   
   def reload_timeline
     @timeline = load_timeline
+    @timeline_stack.clear &populate_timeline
   end
   
   ###
@@ -74,21 +75,24 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       true
     end
   end
+  
   ###
   
   populate_timeline = proc do
     timeline.each do |s|
       flow do
         set_background s.user
-        flow :width => -45 do
-          para(*(autolink(s.text) + [:size => 9, :margin_bottom => 5]))
+        flow :width => -(45 + gutter) do
+          para(*(autolink(s.text) + [:size => 9, :margin => 5, :margin_bottom => 0]))
         end
         flow :width => 45 do
-          image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5 rescue nil
+          image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5
         end
       end
     end
   end
+  
+  ###
   
   background white
   
@@ -97,31 +101,33 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   @counter = strong ""
   
-  @timeline_stack = stack({ :margin => 5, :margin_right => 7 }, &populate_timeline)
+  ###
   
-  stack do
-    flow do
-      @status = edit_line :width => "95%", :margin_bottom => 3 do |s|
-        @counter.text = (size = s.text.size).zero? ? "" : size
-        @counter.style :stroke => (s.text.size > recommended_status_length ? red : black)
-      end
-      
-      def @status.reset
-        self.text = ""
-        focus
-      end
-      
-      para @counter, :size => 9, :margin_left => 5
-    end
-    
-    button "tweet" do
-      twitter.update @status.text
-      reload_timeline
-      @timeline_stack.clear &populate_timeline
-      @status.reset
-    end
+  @status = edit_line :width => -(40 + gutter), :margin_bottom => 3 do |s|
+    @counter.text = (size = s.text.size).zero? ? "" : size
+    @counter.style :stroke => (s.text.size > recommended_status_length ? red : black)
   end
   
+  def @status.reset
+    self.text = ""
+    focus
+  end
+  
+  button "+" do
+    twitter.update @status.text
+    reload_timeline
+    @status.reset
+  end
+  
+  para @counter, :size => 9, :margin => 0
+  
+  @timeline_stack = stack &populate_timeline
+  
+  ###
+  
   @status.reset
-  # timer(60) { reload_timeline }
+  timer 60 do
+    alert "reloading timeline!"
+    reload_timeline
+  end
 end
