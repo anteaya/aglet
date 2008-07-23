@@ -1,9 +1,11 @@
 Shoes.setup do
   gem "twitter"
+  gem "ruby-debug" if ENV["DEBUG"]
 end
 
 require "timeout"
 require "twitter"
+require "ruby-debug" if ENV["DEBUG"]
 
 Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable => false do
   
@@ -20,7 +22,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   def timeline_fixture_path
-    File.join Dir.pwd, "timeline"
+    File.join Dir.pwd, "timeline.yml"
   end
   
   ## ERRRRRORRRRRR HANDLLLLLINNNGG!! (say in the voice of Jon Lovitz as The Thespian)
@@ -38,7 +40,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     begin
       timeout { maintenance_message }
     rescue timeout_error
-      para "Twitter is down. :("
+      para "Twitter is down down down. :("
     end
   end
   
@@ -76,10 +78,10 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     )
   end
   
+  create_timeline_fixture! unless File.exist? timeline_fixture_path
+  
   def timeline
     # twitter.timeline[0..9]
-    
-    create_timeline_fixture! unless File.exist? timeline_fixture_path
     
     if array = YAML.load_file(timeline_fixture_path)
       array[0..9]
