@@ -8,7 +8,6 @@ require "twitter"
 Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable => false do
   
   ### SOME STUFF FOR LOCAL DEVELOPMENT!
-  
   def testing_ui?
     # true
   end
@@ -17,7 +16,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     def update_fixture_file(timeline)
       File.open(timeline_fixture_path, "w+") { |f| f.puts timeline.to_yaml }
     end
-  
+    
     def timeline_fixture_path
       File.join Dir.pwd, "timeline.yml"
     end
@@ -49,19 +48,15 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       to_s.scan(/>([^<]+)</).flatten. # XXX poor man's "get all descendant text nodes"
       reject { |x| x =~ /^\s*$/ }.    # except stuff that is just whitespace
       map { |x| x.squeeze(" ").strip }.join(" ")
-  rescue Object => e
-    para "Twitter is down down down. :("
-    para e.message
+  rescue Timeout::Error, OpenURI::HTTPError
+    para "Twitter is down down down, probably just over capacity right now.",
+      "Try again soon!"
   end
   
   ### NOW, ON VITH ZE SHOW!
   
   def twitter
-    @twitter ||= begin
-      timeout { Twitter::Base.new *File.readlines("cred").map(&:strip) }
-    rescue *twitter_errors
-    end
-    twitter_down! unless @twitter
+    @twitter ||= Twitter::Base.new *File.readlines("cred").map(&:strip)
   end
   
   def update_status
@@ -91,12 +86,13 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   def load_timeline
     @timeline = if testing_ui?
       YAML.load_file(timeline_fixture_path)
-    elsif twitter
+    else
       begin
         twitter.timeline
       rescue *twitter_errors
       end
     end || []
+    
     @timeline = @timeline[0..9]
   end
   
@@ -166,7 +162,11 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   ### LET ZE APP BEGIN!!
   
-  update_fixture_file twitter.timeline if testing_ui? and not File.exist?(timeline_fixture_path)
+  # TODO refactor out a fetch_timeline method or some such that uses 
+  # error handling for previous twitter.timeline calls
+  if testing_ui? and not File.exist?(timeline_fixture_path)
+    update_fixture_file twitter.timeline
+  end
   
   background white
   
