@@ -80,8 +80,12 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     timeline.each do |s|
       flow do
         set_background s.user
-        caption(*(autolink(s.text) + [:size => 9, :margin_right => 45, :margin_bottom => 5])) 
-        image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5 rescue nil
+        flow :width => -45 do
+          para(*(autolink(s.text) + [:size => 9, :margin_bottom => 5]))
+        end
+        flow :width => 45 do
+          image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5 rescue nil
+        end
       end
     end
   end
