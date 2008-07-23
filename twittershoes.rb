@@ -52,29 +52,36 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   def set_background(user)
-    # url = begin
-    #   Timeout.timeout 1 do
+    # begin
+    #   url = Timeout.timeout 1 do
     #     open("http://twitter.com/#{user.screen_name}").
     #       read[/url\((http:\/\/.+profile_background_images.+?)\)/, 1]
     #   end
-    # rescue Object => e
-    #   rgb rand(255), rand(255), rand(255)
+    #   background url if url
+    # rescue Object
     # end
-    # 
-    # background url if url
     
-    @on = @on ? (background(gray(0.9)); nil) : true
     # background user.profile_image_url
+    
+    zebra_stripe gray(0.9)
   end
   
+  def zebra_stripe(color)
+    @zebra_stripe = if @zebra_stripe
+      background color
+      false
+    else
+      true
+    end
+  end
   ###
   
   populate_timeline = proc do
     timeline.each do |s|
       flow do
         set_background s.user
-        caption(*(autolink(s.text) + [:size => 9, :margin_left => 45, :margin_bottom => 5])) 
-        # image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5 rescue nil
+        caption(*(autolink(s.text) + [:size => 9, :margin_right => 45, :margin_bottom => 5])) 
+        image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5 rescue nil
       end
     end
   end
