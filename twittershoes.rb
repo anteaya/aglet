@@ -1,28 +1,26 @@
 Shoes.setup do
   gem "twitter"
-  gem "ruby-debug" if ENV["DEBUG"]
 end
 
 require "timeout"
 require "twitter"
-require "ruby-debug" if ENV["DEBUG"]
 
 Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable => false do
   
   ### SOME STUFF FOR LOCAL DEVELOPMENT!
   
-  def create_timeline_fixture!
-    File.open(timeline_fixture_path, "w+") { |f| f.puts twitter.timeline.to_yaml }
+  def testing_ui?
+    true
   end
   
-  def update_timeline_fixture!(status)
-    File.open(timeline_fixture_path, "w+") { |f| f.puts (timeline[1..-1] << status).to_yaml }
-    
-    raise "Timeline failed to update" unless timeline.first == status
-  end
+  if testing_ui?
+    def update_fixture_file(timeline)
+      File.open(timeline_fixture_path, "w+") { |f| f.puts timeline.to_yaml }
+    end
   
-  def timeline_fixture_path
-    File.join Dir.pwd, "timeline.yml"
+    def timeline_fixture_path
+      File.join Dir.pwd, "timeline.yml"
+    end
   end
   
   ## ERRRRRORRRRRR HANDLLLLLINNNGG!! (say in the voice of Jon Lovitz as The Thespian)
@@ -66,35 +64,35 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   def update_status
-    # twitter.update @status.text
-    
-    update_timeline_fixture!(
-      Twitter::Status.new do |s|
+    if testing_ui?
+      status = Twitter::Status.new do |s|
         s.text = @status.text
-        s.user = timeline.first.user
+        s.user = @timeline.first.user
         s.created_at = Time.new
-        s.id = timeline.first.id.to_i + 1
+        s.id = @timeline.first.id.to_i + 1
       end
-    )
+      
+      timeline = [status] + @timeline[0..-2]
+      update_fixture_file timeline
+    else
+      status = twitter.update @status.text
+    end
+    
+    reload_timeline
+    
+    raise "Timeline failed to update #{caller * "\n"}" unless @timeline.first == status
   end
   
-  create_timeline_fixture! unless File.exist? timeline_fixture_path
-  
-  def timeline
-    # twitter.timeline[0..9]
-    
-    if array = YAML.load_file(timeline_fixture_path)
-      array[0..9]
-    else
-      raise "Timeline fixture is empty!"
-    end
+  def load_timeline
+    @timeline = (testing_ui? ? YAML.load_file(timeline_fixture_path) : twitter.timeline) || []
+    @timeline[0..9]
   end
   
   def reload_timeline
-    @timeline = nil
+    load_timeline
     @timeline_stack.clear do
-      if timeline.any?
-        timeline.each do |s|
+      if @timeline.any?
+        @timeline.each do |s|
           flow do
             set_background s.user
             flow :width => -(45 + gutter) do
@@ -151,6 +149,8 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   ### LET ZE APP BEGIN!!
   
+  update_fixture_file twitter.timeline if testing_ui? and not File.exist?(timeline_fixture_path)
+  
   background white
   
   # Longer entries will be published in full but truncated for mobile devices.
@@ -172,7 +172,6 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   @submit = button "+" do
     update_status
-    reload_timeline
     @status.reset
   end
   

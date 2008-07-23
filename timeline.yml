@@ -1,0 +1,261 @@
+--- 
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 22:11:39 +0000 2008
+  id: "866561065"
+  text: holing up in my parents' basement, wailing on monster backlog of emails and things.app todo's berserker-attack style with adamantium claws.
+  user: !ruby/object:Twitter::User 
+    description: Speed metal, ping pong, and Ruby on Rails. But not necessarily in that order.
+    followers_count: "346"
+    id: "866561065"
+    location: Mezza Luna Restaurant
+    name: Jon "Lark" Larkowski
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/53978385/avatar3_big_normal.jpg
+    screen_name: l4rk
+    url: http://blog.l4rk.com/
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 21:53:36 +0000 2008
+  id: "866546855"
+  text: oops, didn't mean to tweet that last one.. UI testing setup needs work apparently!
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866546855"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 21:52:24 +0000 2008
+  id: "866545827"
+  text: testing ui yo
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866545827"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 21:49:56 +0000 2008
+  id: "866543761"
+  text: twitter shoooooessssss!
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866543761"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 21:47:45 +0000 2008
+  id: "866541873"
+  text: getting a bad ass tat cause i gots that kindsa steez
+  user: !ruby/object:Twitter::User 
+    description: working class hero
+    followers_count: "97"
+    id: "866541873"
+    location: Bainbridge Island
+    name: Baron Von Dragon
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/52075135/wallace2_normal.png
+    screen_name: monde
+    url: http://blog.mondragon.cc/
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 21:38:52 +0000 2008
+  id: "866534643"
+  text: Just got the Isotope's invite for the SF Bay Guardian's Best of Bay 2008 party... Jello Biafra is the MC this year!
+  user: !ruby/object:Twitter::User 
+    description: The Comic Pimp. Lover of ridiculous &amp; bizarre culture. Sporter of flashy Italian suits &amp; alligator shoes. Prorietor of SF's Isotope - the comic book lounge.
+    followers_count: "433"
+    id: "866534643"
+    location: San Francisco, CA
+    name: James Sime
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/25426352/minime_normal.jpg
+    screen_name: jamessime
+    url: http://isotopecomics.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 21:36:39 +0000 2008
+  id: "866532837"
+  text: just unwittingly took a video conference call direct from @cgrusden's terlet. phoning my therapist now...
+  user: !ruby/object:Twitter::User 
+    description: Speed metal, ping pong, and Ruby on Rails. But not necessarily in that order.
+    followers_count: "346"
+    id: "866532837"
+    location: Mezza Luna Restaurant
+    name: Jon "Lark" Larkowski
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/53978385/avatar3_big_normal.jpg
+    screen_name: l4rk
+    url: http://blog.l4rk.com/
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 20:06:55 +0000 2008
+  id: "866462292"
+  text: "@greatseth new twitter offices at 539 Bryant"
+  user: !ruby/object:Twitter::User 
+    description: Cat herder
+    followers_count: "575"
+    id: "866462292"
+    location: PHL
+    name: Evan
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/54130744/icon_normal.jpg
+    screen_name: _evan
+    url: http://blog.evanweaver.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 19:19:46 +0000 2008
+  id: "866427661"
+  text: and now i'm just supposed to go on with life? forever regretting that he never got a chance to stab me in my mediocrity-filled jugular?
+  user: !ruby/object:Twitter::User 
+    description: the ill-conceived freelance prof
+    followers_count: "1747"
+    id: "866427661"
+    location: ""
+    name: why the lucky stiff
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/32324032/mortar_midget_normal.png
+    screen_name: _why
+    url: ""
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 19:05:37 +0000 2008
+  id: "866416006"
+  text: here i am getting all choked up over the strains of zed's farewell harmonica. (blubbering) dear god, he can't be gone. don't say he's gone!
+  user: !ruby/object:Twitter::User 
+    description: the ill-conceived freelance prof
+    followers_count: "1747"
+    id: "866416006"
+    location: ""
+    name: why the lucky stiff
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/32324032/mortar_midget_normal.png
+    screen_name: _why
+    url: ""
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 19:01:55 +0000 2008
+  id: "866412835"
+  text: "@_evan whose offices this time?"
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866412835"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:59:23 +0000 2008
+  id: "866410769"
+  text: "\"It's like pooping a party, but without sturdy brown feces.\" The Dutch have so much to offer."
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866410769"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:53:29 +0000 2008
+  id: "866405872"
+  text: git ci -m "clean up some stuff; Germanify some other stuff"
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866405872"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:53:09 +0000 2008
+  id: "866405578"
+  text: Hiding in the office! I look pretty rough, but i've been worse
+  user: !ruby/object:Twitter::User 
+    description: Cat herder
+    followers_count: "574"
+    id: "866405578"
+    location: PHL
+    name: Evan
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/54130744/icon_normal.jpg
+    screen_name: _evan
+    url: http://blog.evanweaver.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:48:45 +0000 2008
+  id: "866401864"
+  text: "Iliad: EPIC"
+  user: !ruby/object:Twitter::User 
+    description: I design things and hang out with people and create.
+    followers_count: "151"
+    id: "866401864"
+    location: The Hague, NL
+    name: Rob Mientjes
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/55926014/Photo_570_normal.jpg
+    screen_name: rm
+    url: http://robmientjes.nl/
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:48:31 +0000 2008
+  id: "866401670"
+  text: "Big letter: EPIC MAIL"
+  user: !ruby/object:Twitter::User 
+    description: I design things and hang out with people and create.
+    followers_count: "151"
+    id: "866401670"
+    location: The Hague, NL
+    name: Rob Mientjes
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/55926014/Photo_570_normal.jpg
+    screen_name: rm
+    url: http://robmientjes.nl/
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:44:39 +0000 2008
+  id: "866398267"
+  text: "Bin Laden's footsteps in the snowy mountains: EPIC TRAIL"
+  user: !ruby/object:Twitter::User 
+    description: I design things and hang out with people and create.
+    followers_count: "151"
+    id: "866398267"
+    location: The Hague, NL
+    name: Rob Mientjes
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/55926014/Photo_570_normal.jpg
+    screen_name: rm
+    url: http://robmientjes.nl/
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:36:36 +0000 2008
+  id: "866391336"
+  text: "@monde haha! your scathing tech reviews will be the downfall of entire industries!!"
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866391336"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:34:06 +0000 2008
+  id: "866389167"
+  text: panic! Unresolved kernel trap! registers!
+  user: !ruby/object:Twitter::User 
+    description: Master of the Universe
+    followers_count: "15"
+    id: "866389167"
+    location: The Tenderloin
+    name: seth
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/56138180/Photo_144_normal.jpg
+    screen_name: greatseth
+    url: http://greatseth.com
+- !ruby/object:Twitter::Status 
+  created_at: Wed Jul 23 18:14:44 +0000 2008
+  id: "866372292"
+  text: 60 degrees, WTF? BTW iPhone v2.0 camera takes a million years to load, way to add more suck into a shit ass camera
+  user: !ruby/object:Twitter::User 
+    description: working class hero
+    followers_count: "97"
+    id: "866372292"
+    location: Bainbridge Island
+    name: Baron Von Dragon
+    profile_image_url: http://s3.amazonaws.com/twitter_production/profile_images/52075135/wallace2_normal.png
+    screen_name: monde
+    url: http://blog.mondragon.cc/
