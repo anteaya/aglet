@@ -11,7 +11,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   ###
   
   def twitter_cred_path
-    File.expand_path "./cred" # "~/.twittershoes_cred"
+    File.expand_path "~/.twittershoes_cred"
   end
   
   def twitter
