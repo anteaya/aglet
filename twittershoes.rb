@@ -2,87 +2,23 @@ Shoes.setup do
   gem "twitter"
 end
 
-require "timeout"
-require "twitter"
+%w( timeout twitter ).each { |x| require x }
+%w( dev errors ).each { |x| require "lib/#{x}" }
 
 Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable => false do
+  extend TwitterShoes::Dev, TwitterShoes::Errors
   
-  ### SOME STUFF FOR LOCAL DEVELOPMENT!
-  def testing_ui?
-    # true
+  ###
+  
+  def twitter_cred_path
+    File.expand_path "./cred" # "~/.twittershoes_cred"
   end
-  
-  if testing_ui?
-    def update_fixture_file(timeline)
-      File.open(timeline_fixture_path, "w+") { |f| f.puts timeline.to_yaml }
-    end
-    
-    def timeline_fixture_path
-      File.join Dir.pwd, "timeline.yml"
-    end
-  end
-  
-  ## ERRRRRORRRRRR HANDLLLLLINNNGG!! (say in the voice of Jon Lovitz as The Thespian)
-  
-  def timeout(seconds = 1, &block)
-    Timeout.timeout(seconds, &block)
-  end
-  
-  def twitter_errors
-    [Timeout::Error, ::Twitter::CantConnect]
-  end
-  
-  def twitter_down!
-    fail_whale
-    maintenance_message
-    # video "http://sjc-v162.sjc.youtube.com/get_video?video_id=CWyjgYZvaj4"
-  end
-  
-  def fail_whale
-    image "http://static.twitter.com/images/whale.png",
-      :width => 275, :height => 200, :margin => 5
-  end
-  
-  # Assuming that the maintenance page is up..
-  def maintenance_message
-    para *Hpricot(timeout { open("http://twitter.com") }).at("#content").
-      to_s.scan(/>([^<]+)</).flatten. # XXX poor man's "get all descendant text nodes"
-      reject { |x| x =~ /^\s*$/ }.    # except stuff that is just whitespace
-      map { |x| x.squeeze(" ").strip }.join(" ")
-  rescue Timeout::Error, OpenURI::HTTPError
-    para "Twitter is down down down, probably just over capacity right now.",
-      "Try again soon!"
-  end
-  
-  ### NOW, ON VITH ZE SHOW!
   
   def twitter
-    @twitter ||= ::Twitter::Base.new *File.readlines("cred").map(&:strip)
+    @twitter ||= ::Twitter::Base.new *File.readlines(twitter_cred_path).map(&:strip)
   end
   
-  def update_status
-    if testing_ui?
-      status = ::Twitter::Status.new do |s|
-        s.text = @status.text
-        s.user = @timeline.first.user
-        s.created_at = Time.new
-        s.id = @timeline.first.id.to_i + 1
-      end
-      
-      timeline = [status] + @timeline[0..-2]
-      update_fixture_file timeline
-    else
-      status = begin
-        timeout { twitter.update @status.text }
-      rescue *twitter_errors
-      end
-    end
-    
-    reload_timeline
-    reset_status
-    
-    raise "Timeline failed to update #{caller * "\n"}" unless status == @timeline.first
-  end
+  ###
   
   def load_timeline
     @timeline = if testing_ui?
@@ -122,6 +58,30 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     end
   end
   
+  def update_status
+    if testing_ui?
+      status = ::Twitter::Status.new do |s|
+        s.text = @status.text
+        s.user = @timeline.first.user
+        s.created_at = Time.new
+        s.id = @timeline.first.id.to_i + 1
+      end
+      
+      timeline = [status] + @timeline[0..-2]
+      update_fixture_file timeline
+    else
+      status = begin
+        timeout { twitter.update @status.text }
+      rescue *twitter_errors
+      end
+    end
+    
+    reload_timeline
+    reset_status
+    
+    raise "Timeline failed to update #{caller * "\n"}" unless status == @timeline.first
+  end
+  
   ###
   
   def zebra_stripe(color)
@@ -151,7 +111,14 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     @status.focus
   end
   
-  ### LET ZE APP BEGIN!!
+  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+  
+  # if not File.exist?(twitter_cred_path)
+  #   name = ask "user name?"
+  #   pass = ask "password?"
+  #   alert "Thank you, this info is now stored at #{twitter_cred_path}"
+  #   File.open(twitter_cred_path, "w+") { |f| f.puts name, pass }
+  # end
   
   # TODO refactor out a fetch_timeline method or some such that uses 
   # error handling for previous twitter.timeline calls
@@ -159,14 +126,12 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     update_fixture_file twitter.timeline
   end
   
+  ###
+  
   background white
   
   # Longer entries will be published in full but truncated for mobile devices.
   recommended_status_length = 140
-  
-  @counter = strong ""
-  
-  ###
   
   @status = edit_line :width => -(55 + gutter), :margin_bottom => 3, :margin_right => 5 do |s|
     @counter.text = (size = s.text.size).zero? ? "" : size
@@ -177,6 +142,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     update_status
   end
   
+  @counter = strong ""
   para @counter, :size => 9, :margin => 0, :margin_top => 8
   
   @timeline_stack = stack
