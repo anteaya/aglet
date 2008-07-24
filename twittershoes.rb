@@ -78,8 +78,6 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     
     reload_timeline
     reset_status
-    
-    raise "Timeline failed to update #{caller * "\n"}" unless status == @timeline.first
   end
   
   ###
