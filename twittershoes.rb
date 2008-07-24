@@ -101,17 +101,21 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     load_timeline
     @timeline_stack.clear do
       if @timeline.any?
+        
         @timeline.each do |s|
           flow do
-            set_background s.user
+            zebra_stripe gray(0.9)
+            
             flow :width => -(45 + gutter) do
-              para(*(autolink(s.text) + [:size => 9, :margin => 5, :margin_bottom => 0]))
+              para(*(autolink(s.text) + [:size => 9, :margin => 5]))
             end
+            
             flow :width => 45 do
               image s.user.profile_image_url, :width => 45, :height => 45, :radius => 5, :margin => 5
             end
           end
         end
+      
       else
         twitter_down!
       end
@@ -119,21 +123,6 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   ###
-  
-  def set_background(user)
-    # begin
-    #   url = Timeout.timeout 1 do
-    #     open("http://twitter.com/#{user.screen_name}").
-    #       read[/url\((http:\/\/.+profile_background_images.+?)\)/, 1]
-    #   end
-    #   background url if url
-    # rescue Object
-    # end
-    
-    # background user.profile_image_url
-    
-    zebra_stripe gray(0.9)
-  end
   
   def zebra_stripe(color)
     @zebra_stripe = if @zebra_stripe
@@ -158,6 +147,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   def reset_status
     @status.text = ""
+    @counter.text = ""
     @status.focus
   end
   
@@ -178,16 +168,16 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   ###
   
-  @status = edit_line :width => -(40 + gutter), :margin_bottom => 3 do |s|
+  @status = edit_line :width => -(55 + gutter), :margin_bottom => 3, :margin_right => 5 do |s|
     @counter.text = (size = s.text.size).zero? ? "" : size
     @counter.style :stroke => (s.text.size > recommended_status_length ? red : black)
   end
   
-  @submit = button "+" do
+  @submit = button "+", :margin_right => 0 do
     update_status
   end
   
-  para @counter, :size => 9, :margin => 0
+  para @counter, :size => 9, :margin => 0, :margin_top => 8
   
   @timeline_stack = stack
   reload_timeline
