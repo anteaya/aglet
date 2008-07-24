@@ -35,6 +35,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   def twitter_down!
     fail_whale
     maintenance_message
+    # video "http://sjc-v162.sjc.youtube.com/get_video?video_id=CWyjgYZvaj4"
   end
   
   def fail_whale
@@ -56,12 +57,12 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   ### NOW, ON VITH ZE SHOW!
   
   def twitter
-    @twitter ||= Twitter::Base.new *File.readlines("cred").map(&:strip)
+    @twitter ||= ::Twitter::Base.new *File.readlines("cred").map(&:strip)
   end
   
   def update_status
     if testing_ui?
-      status = Twitter::Status.new do |s|
+      status = ::Twitter::Status.new do |s|
         s.text = @status.text
         s.user = @timeline.first.user
         s.created_at = Time.new
