@@ -98,7 +98,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       case token
       when /@\S+/
         link token, :click => "http://twitter.com/#{token[1..-1]}"
-      when /http:\/\/\S+/
+      when /(http:\/\/|www\.)\S+/
         link token, :click => token
       else token
       end
