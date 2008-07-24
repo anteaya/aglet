@@ -1,0 +1,16 @@
+= TwitterShoes
+
+Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about Shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
+
+= Contributors
+
+- Seth Thomas Rasmussen http://greatseth.com
+
+= Thanks to..
+
+- _why, for starting Shoes and doing loads of awesome work besides!
+- Bluebie, for being very helpful in #shoes on irc.freenode.net
+
+= License
+
+To ill. Yeah.
