@@ -40,7 +40,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       if @timeline.any?
         
         @timeline.each do |status|
-          flow do
+          flow :margin => 0 do
             zebra_stripe gray(0.9)
             
             stack :width => -(45 + gutter) do
@@ -169,19 +169,30 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   # Longer entries will be published in full but truncated for mobile devices.
   recommended_status_length = 140
   
-  @status = edit_line :width => -(55 + gutter), :margin_bottom => 3, :margin_right => 5 do |s|
-    @counter.text = (size = s.text.size).zero? ? "" : size
-    @counter.style :stroke => (s.text.size > recommended_status_length ? red : black)
+  flow do
+    background black
+    
+    @status = edit_line :width => -(55 + gutter), :margin_bottom => 3, :margin_right => 5 do |s|
+      @counter.text = (size = s.text.size).zero? ? "" : size
+      @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
+    end
+    
+    @submit = button "+", :margin_right => 0 do
+      update_status
+    end
+
+    @counter_default_stroke = white
+    @counter = strong ""
+    para @counter, :size => 9, :margin => 0, :margin_top => 8, :stroke => @counter_default_stroke
   end
-  
-  @submit = button "+", :margin_right => 0 do
-    update_status
-  end
-  
-  @counter = strong ""
-  para @counter, :size => 9, :margin => 0, :margin_top => 8
   
   @timeline_stack = stack
+  
+  stack :margin_top => 10 do
+    background black
+    para "©2008 ", link("GREATsethPECTATIONS", :click => "http://greatseth.com"), :stroke => white
+  end
+  
   reload_timeline
   reset_status
   
