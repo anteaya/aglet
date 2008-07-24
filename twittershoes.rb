@@ -34,6 +34,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   end
   
   def reload_timeline
+    info "reloading timeline"
     load_timeline
     @timeline_stack.clear do
       if @timeline.any?
