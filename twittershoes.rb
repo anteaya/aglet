@@ -148,7 +148,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   reload_timeline
   reset_status
   
-  timer 60 do
+  every 60 do
     reload_timeline
   end
 end
