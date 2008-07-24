@@ -1,4 +1,4 @@
-= TwitterShoes
+= Twitter Shoes!
 
 Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about Shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
 
@@ -8,9 +8,14 @@ Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it anno
 
 = Thanks to..
 
-- _why, for starting Shoes and doing loads of awesome work besides!
-- Bluebie, for being very helpful in #shoes on irc.freenode.net
+  * _why, for starting Shoes and doing loads of awesome work besides!
+  * Bluebie, for being very helpful in #shoes on irc.freenode.net
 
 = License
 
 To ill. Yeah. But seriously, WTFPL. See LICENSE file.
+
+= TODO
+
+  * Support drag and drop file/image uploading/sharing
+  * Support automatic URL shortening on paste
