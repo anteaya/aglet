@@ -24,7 +24,7 @@ module Errors
   
   def fail_whale
     image "http://static.twitter.com/images/whale.png",
-      :width => 275, :height => 200, :margin => 5
+      :width => 275, :height => 200, :margin => [0,0,0,5]
   end
   
   # Assuming that the maintenance page is up..
