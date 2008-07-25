@@ -2,6 +2,8 @@
 
 Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about Shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
 
+Currently, to use Twitter Shoes, you must create a file named ".twitter_cred" in your user's home directory with two lines: username and password. This setup will be done in the app in the near future.
+
 = Contributors
 
 - Seth Thomas Rasmussen http://greatseth.com
