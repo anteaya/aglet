@@ -127,7 +127,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 585, :resizable 
       @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
     end
     
-    @submit = button "+", :margin => 0 do
+    @submit = button "»", :margin => 0 do
       update_status
     end
     

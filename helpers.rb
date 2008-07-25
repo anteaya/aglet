@@ -9,16 +9,24 @@ module Helpers
     end
   end
   
+  def at_pattern
+    "[^\s!?.]+"
+  end
+  
   def autolink(status)
     status.strip.scan(/(\S+)(\s+)?/).flatten.map do |token|
       case token
-      when /@\S+/
-        link token, :click => "http://twitter.com/#{token[1..-1]}"
+      when /@#{at_pattern}/
+        link token, :click => "http://twitter.com/#{username_from token}"
       when /(http:\/\/|www\.)\S+/
         link token, :click => "#{"http://" if $1 =~ /www/}#{token}"
       else token
       end
     end
+  end
+  
+  def username_from(at_token)
+    at_token[1..-1].sub Regexp.new(at_pattern), ""
   end
   
   # Based on distance_of_time_in_words from Rails' ActionView.
