@@ -46,32 +46,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   def reload_timeline
     info "reloading timeline"
     load_timeline
-    @timeline_stack.clear do
-      if @timeline.any?
-        
-        @timeline.each do |status|
-          flow :margin => 0 do
-            zebra_stripe gray(0.9)
-            
-            stack :width => -(45 + gutter) do
-              with_options :margin => 5 do |s|
-                s.para autolink(status.text), :size => 9
-                s.para "#{time_ago status.created_at} ago",
-                  :size => 8, :margin_top => 0, :stroke => gray
-              end
-            end
-            
-            stack :width => 45 do
-              image status.user.profile_image_url,
-                :width => 45, :height => 45, :radius => 5, :margin => 5
-            end
-          end
-        end
-      
-      else
-        twitter_down!
-      end
-    end
+    @timeline_stack.clear { @timeline.any? ? populate_timeline : twitter_down! }
   end
   
   def update_status
@@ -93,7 +68,26 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     reset_status
   end
   
-  ###
+  def populate_timeline
+    @timeline.each do |status|
+      flow :margin => 0 do
+        zebra_stripe gray(0.9)
+        
+        stack :width => -(45 + gutter) do
+          with_options :margin => 5 do |s|
+            s.para autolink(status.text), :size => 9
+            s.para "#{time_ago status.created_at} ago",
+              :size => 8, :margin_top => 0, :stroke => gray
+          end
+        end
+        
+        stack :width => 45 do
+          image status.user.profile_image_url,
+            :width => 45, :height => 45, :radius => 5, :margin => 5
+        end
+      end
+    end
+  end
   
   def reset_status
     @status.text = ""
