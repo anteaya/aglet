@@ -15,7 +15,7 @@ module Helpers
       when /@\S+/
         link token, :click => "http://twitter.com/#{token[1..-1]}"
       when /(http:\/\/|www\.)\S+/
-        link token, :click => token
+        link token, :click => "#{"http://" if $1 ~= /www/}#{token}"
       else token
       end
     end

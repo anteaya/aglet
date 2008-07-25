@@ -51,7 +51,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
             
             stack :width => -(45 + gutter) do
               with_options :margin => 5 do |s|
-                s.para(*(autolink(status.text) + [:size => 9]))
+                s.para *(autolink(status.text) + [:size => 9])
                 s.para "#{time_ago status.created_at} ago",
                   :size => 8, :margin_top => 0, :stroke => gray
               end
@@ -82,10 +82,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       timeline = [status] + @timeline[0..-2]
       update_fixture_file timeline
     else
-      status = begin
-        timeout { twitter.update @status.text }
-      rescue *twitter_errors
-      end
+      twitter_api { twitter.update @status.text }
     end
     
     reload_timeline
@@ -109,10 +106,8 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   #   File.open(twitter_cred_path, "w+") { |f| f.puts name, pass }
   # end
   
-  # TODO refactor out a fetch_timeline method or some such that uses 
-  # error handling for previous twitter.timeline calls
   if testing_ui? and not File.exist?(timeline_fixture_path)
-    update_fixture_file twitter.timeline
+    update_fixture_file(twitter_api { twitter.timeline })
   end
   
   ###

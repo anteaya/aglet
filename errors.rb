@@ -1,6 +1,13 @@
 module TwitterShoes
 ## ERRRRRORRRRRR HANDLLLLLINNNGG!! (say in the voice of Jon Lovitz as The Thespian)
 module Errors
+  def twitter_api(&block)
+    begin
+      timeout &block
+    rescue *twitter_errors
+    end
+  end
+  
   def timeout(seconds = 1, &block)
     Timeout.timeout(seconds, &block)
   end
