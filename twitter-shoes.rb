@@ -11,16 +11,12 @@ errors
 helpers
 ).each { |x| require x }
 
-Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable => false do
+Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 585, :resizable => false do
   extend TwitterShoes::Dev, TwitterShoes::Errors, TwitterShoes::Helpers
   
-  ###
+  cred_path = File.expand_path "~/.twittershoes_cred"
   
-  def twitter_cred_path
-    File.expand_path "~/.twittershoes_cred"
-  end
-  
-  @twitter = ::Twitter::Base.new *File.readlines(twitter_cred_path).map(&:strip)
+  @twitter = ::Twitter::Base.new *File.readlines(cred_path).map(&:strip)
   
   @friends = twitter_api { @twitter.friends.map(&:name) }
   
@@ -94,11 +90,11 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   
   ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
   
-  # if not File.exist?(twitter_cred_path)
+  # if not File.exist?(cred_path)
   #   name = ask "user name?"
   #   pass = ask "password?"
-  #   alert "Thank you, this info is now stored at #{twitter_cred_path}"
-  #   File.open(twitter_cred_path, "w+") { |f| f.puts name, pass }
+  #   alert "Thank you, this info is now stored at #{cred_path}"
+  #   File.open(cred_path, "w+") { |f| f.puts name, pass }
   # end
   
   if testing_ui? and not File.exist?(timeline_fixture_path)
@@ -112,29 +108,43 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   # Longer entries will be published in full but truncated for mobile devices.
   recommended_status_length = 140
   
-  flow do
+  status_offset = -30
+  flow :margin => [0,0,0,5]do # :top => status_offset do
     background black
     
-    @status = edit_line :width => -(55 + gutter), :margin_bottom => 3, :margin_right => 5 do |s|
+    # hover do
+    #   style :top => 0
+    # end
+    # 
+    # leave do
+    #   style :top => status_offset
+    # end
+    
+    ###
+    
+    @status = edit_line :width => -(55 + gutter), :margin => [0,0,5,0] do |s|
       @counter.text = (size = s.text.size).zero? ? "" : size
       @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
     end
     
-    @submit = button "+", :margin_right => 0 do
+    @submit = button "+", :margin => 0 do
       update_status
     end
-
+    
     @counter_default_stroke = white
     @counter = strong ""
-    para @counter, :size => 9, :margin => 0, :margin_top => 8, :stroke => @counter_default_stroke
+    para @counter, :size => 9, :margin => [0,8,0,0], :stroke => @counter_default_stroke
   end
   
-  @timeline_stack = stack
+  @timeline_stack = stack :height => 500, :scroll => true
   
-  stack :margin_top => 10 do
+  stack :height => 43 do
     background black
-    para "©2008 ", link("GREATsethPECTATIONS", :click => "http://greatseth.com"), :stroke => white
+    # para "©2008 ", link("GREATsethPECTATIONS", :click => "http://greatseth.com", :hover => false),
+    #       :stroke => white, :margin => [0,5,0,0], :align => "center"
   end
+  
+  ###
   
   reload_timeline
   reset_status
