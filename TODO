@@ -3,3 +3,4 @@
 * Suppose tab autocomplete for user names
 * Update app timeline with a "twitter down!" status entry 
   when polling determines that they are over capacity.
+* Some sort of alert for new tweets. Shoes at least. Probably growl eventually.

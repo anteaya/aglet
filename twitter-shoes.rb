@@ -20,13 +20,9 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     File.expand_path "~/.twittershoes_cred"
   end
   
-  def twitter
-    @twitter ||= ::Twitter::Base.new *File.readlines(twitter_cred_path).map(&:strip)
-  end
+  @twitter = ::Twitter::Base.new *File.readlines(twitter_cred_path).map(&:strip)
   
-  def friends
-    @friends ||= twitter.friends.map(&:name)
-  end
+  @friends = twitter_api { @twitter.friends.map(&:name) }
   
   ###
   
@@ -35,9 +31,13 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       if testing_ui?
         YAML.load_file(timeline_fixture_path)
       else
-        twitter_api { twitter.timeline }
+        load_timeline_from_api
       end || []
     ).first(10)
+  end
+  
+  def load_timeline_from_api
+    twitter_api { @twitter.timeline }
   end
   
   def reload_timeline
@@ -58,7 +58,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
       timeline = [status] + @timeline[0..-2]
       update_fixture_file timeline
     else
-      twitter_api { twitter.update @status.text }
+      twitter_api { @twitter.update @status.text }
     end
     
     reload_timeline
@@ -102,7 +102,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   # end
   
   if testing_ui? and not File.exist?(timeline_fixture_path)
-    update_fixture_file(twitter_api { twitter.timeline })
+    update_fixture_file load_timeline_from_api
   end
   
   ###
