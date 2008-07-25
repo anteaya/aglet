@@ -31,16 +31,13 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
   ###
   
   def load_timeline
-    @timeline = if testing_ui?
-      YAML.load_file(timeline_fixture_path)
-    else
-      begin
-        twitter.timeline
-      rescue *twitter_errors
-      end
-    end || []
-    
-    @timeline = @timeline[0..9]
+    @timeline = (
+      if testing_ui?
+        YAML.load_file(timeline_fixture_path)
+      else
+        twitter_api { twitter.timeline }
+      end || []
+    ).first(10)
   end
   
   def reload_timeline
