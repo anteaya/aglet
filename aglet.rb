@@ -11,7 +11,7 @@ errors
 helpers
 ).each { |x| require x }
 
-Shoes.app :title => "aglet", :width => 275, :height => 585, :resizable => false do
+Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false do
   extend TwitterShoes::Dev, TwitterShoes::Errors, TwitterShoes::Helpers
   
   cred_path = File.expand_path "~/.twittershoes_cred"
@@ -70,17 +70,18 @@ Shoes.app :title => "aglet", :width => 275, :height => 585, :resizable => false 
         
         stack :width => -(45 + gutter) do
           para autolink(status.text), :size => 9, :margin => 5
+          flow :margin => [5,0,0,0] do
+            with_options :size => 7, :margin => [0,0,5,5] do |menu|
+              menu.para link(time_ago(status.created_at), :click => "http://twitter.com/statuses/#{status.id}")
+              menu.para link("reply")  { @status.text += "@#{status.user.screen_name} " ; @status.focus }
+              menu.para link("direct") { @status.text += "d #{status.user.screen_name} "; @status.focus }
+            end
+          end
         end
         
         stack :width => 45 do
           image status.user.profile_image_url,
             :width => 45, :height => 45, :radius => 5, :margin => [5,5,5,3]
-          
-          with_options :size => 7, :align => "center", :margin => [0,0,0,2] do |menu|
-            menu.para link(time_ago(status.created_at), :click => "http://twitter.com/statuses/#{status.id}")
-            menu.para link("reply")  { @status.text += "@#{status.user.screen_name} " ; @status.focus }
-            menu.para link("direct") { @status.text += "d #{status.user.screen_name} "; @status.focus }
-          end
         end
       end
     end
@@ -135,7 +136,7 @@ Shoes.app :title => "aglet", :width => 275, :height => 585, :resizable => false 
   
   @timeline_stack = stack :height => 500, :scroll => true
   
-  stack :height => 43 do
+  stack :height => 28 do
     background black
     # para "©2008 ", link("GREATsethPECTATIONS", :click => "http://greatseth.com", :hover => false),
     #       :stroke => white, :margin => [0,5,0,0], :align => "center"
