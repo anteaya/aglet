@@ -12,8 +12,7 @@ helpers
 ).each { |x| require x }
 
 Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable => false do
-  extend TwitterShoes::Dev, TwitterShoes::Errors,
-    TwitterShoes::Helpers
+  extend TwitterShoes::Dev, TwitterShoes::Errors, TwitterShoes::Helpers
   
   ###
   
