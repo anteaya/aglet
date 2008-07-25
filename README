@@ -1,4 +1,4 @@
-= Twitter Shoes!
+= aglet - a Twitter client with Shoes on
 
 Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about Shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
 
@@ -12,6 +12,7 @@ Currently, to use Twitter Shoes, you must create a file named ".twitter_cred" in
 
   * _why, for starting Shoes and doing loads of awesome work besides!
   * Bluebie, for being very helpful in #shoes on irc.freenode.net
+  * @rm for the name "aglet"
 
 = License
 
