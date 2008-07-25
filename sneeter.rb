@@ -61,6 +61,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 585, :resizable 
     reset_status
   end
   
+  # Layout for timeline
   def populate_timeline
     @timeline.each do |status|
       flow :margin => 0 do
