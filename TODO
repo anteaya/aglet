@@ -1,3 +1,5 @@
 * Support drag and drop file/image uploading/sharing
 * Support automatic URL shortening on paste
 * Suppose tab autocomplete for user names
+* Update app timeline with a "twitter down!" status entry 
+  when polling determines that they are over capacity.

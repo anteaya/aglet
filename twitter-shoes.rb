@@ -24,6 +24,10 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
     @twitter ||= ::Twitter::Base.new *File.readlines(twitter_cred_path).map(&:strip)
   end
   
+  def friends
+    @friends ||= twitter.friends.map(&:name)
+  end
+  
   ###
   
   def load_timeline
@@ -51,7 +55,7 @@ Shoes.app :title => "Twitter Shoes!", :width => 275, :height => 650, :resizable 
             
             stack :width => -(45 + gutter) do
               with_options :margin => 5 do |s|
-                s.para *(autolink(status.text) + [:size => 9])
+                s.para autolink(status.text), :size => 9
                 s.para "#{time_ago status.created_at} ago",
                   :size => 8, :margin_top => 0, :stroke => gray
               end
