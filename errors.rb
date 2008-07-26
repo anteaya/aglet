@@ -18,7 +18,7 @@ module Errors
   
   def twitter_down!
     fail_whale
-    maintenance_message
+    # maintenance_message
     # video "http://sjc-v162.sjc.youtube.com/get_video?video_id=CWyjgYZvaj4"
   end
   
@@ -34,7 +34,7 @@ module Errors
       reject { |x| x =~ /^\s*$/ }.    # except stuff that is just whitespace
       map { |x| x.squeeze(" ").strip }.join(" ")
   rescue Timeout::Error, OpenURI::HTTPError
-    para "Twitter is down down down, probably just over capacity right now.",
+    para "Twitter is down down down, probably just over capacity right now. ",
       "Try again soon!"
   end
 end

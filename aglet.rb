@@ -22,6 +22,16 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
   
   ###
   
+  def fail_whale_orange
+    rgb 241,90,34
+  end
+  
+  def fail_whale_blue
+    rgb 108, 197, 195
+  end
+  
+  ###
+  
   def load_timeline
     @timeline = (
       if testing_ui?
@@ -36,10 +46,32 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
     twitter_api { @twitter.timeline }
   end
   
+  @first_load = true
+  
   def reload_timeline
     info "reloading timeline"
     load_timeline
-    @timeline_stack.clear { @timeline.any? ? populate_timeline : twitter_down! }
+    
+    if @timeline.any?
+      background white
+      @timeline_stack.clear do
+        # TODO add status about over capacity to top of list instead of alert
+        populate_timeline
+      end
+    
+    elsif not @first_load
+      warn "timeline reloaded empty, Twitter is probably over capacity"
+    
+    else
+      alert "Twitter is over capacity at the moment, " +
+        "but the timeline will continue to attempt to reload in the background."
+      
+      background fail_whale_orange
+      @timeline_stack.clear { twitter_down! }
+    
+    end
+    
+    @first_load = false
   end
   
   def update_status
@@ -108,13 +140,11 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
   
   ###
   
-  background white
-  
   # Longer entries will be published in full but truncated for mobile devices.
   recommended_status_length = 140
   
   flow :margin => [0,0,0,5] do
-    background black
+    background fail_whale_blue
     
     @status = edit_box :width => -(55 + gutter), :height => 35, :margin => [5,5,5,0] do |s|
       if s.text[-1] == ?\n
