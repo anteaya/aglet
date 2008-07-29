@@ -16,9 +16,25 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
   
   extend Aglet::Dev, Aglet::Errors, Aglet::Helpers
   
-  cred_path = File.expand_path "~/.twittershoes_cred"
+  ###
   
-  @twitter = ::Twitter::Base.new *File.readlines(cred_path).map(&:strip)
+  @cred_path = File.expand_path("~/.aglet_cred")
+  
+  if not File.exist?(@cred_path)
+    # name = ask "user name?"
+    # pass = ask "password?"
+    # File.open(@cred_path, "w+") { |f| f.puts name, pass }
+    # alert "Thank you, this info is now stored at #{@cred_path}"
+    
+    alert "Sorry, but you must create a file at #{@cred_path} with two lines:\n\nUSERNAME\nPASSWORD\n\nThis app is young. We will fix that some day!"
+    exit!
+  end
+  
+  @cred = File.readlines(@cred_path).map(&:strip)
+  
+  ###
+  
+  @twitter = Twitter::Base.new *@cred
   
   # @friends = twitter_api { @twitter.friends.map(&:name) }
   
@@ -111,6 +127,8 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
         
         stack :width => 45 do
           avatar_for status.user
+          para link_to_profile(status.user), :size => 7, :align => "right",
+            :margin => [0,0,5,5]
         end
       end
     end
@@ -123,15 +141,6 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
   end
   
   ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-  
-  # if not File.exist?(cred_path)
-  #   name = ask "user name?"
-  #   pass = ask "password?"
-  #   alert "Thank you, this info is now stored at #{cred_path}"
-  #   File.open(cred_path, "w+") { |f| f.puts name, pass }
-  # end
-  
-  ###
   
   background white
   

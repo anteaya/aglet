@@ -1,7 +1,7 @@
 module Aglet
 module Helpers
   def fail_whale_orange
-    rgb 241,90,34
+    rgb 241, 90, 34
   end
   
   def fail_whale_blue
@@ -30,7 +30,7 @@ module Helpers
   end
   
   def link_to_profile(user)
-    link user.name, :click => "http://twitter.com/#{user.screen_name}"
+    link user.screen_name, :click => "http://twitter.com/#{user.screen_name}"
   end
   
   ###
@@ -39,14 +39,19 @@ module Helpers
     flow :margin => [5,0,0,0] do
       with_options :size => 7, :margin => [0,0,5,5] do |m|
         m.para link_to_status(status)
-        @menus[status.id] = m.para(
-          link_to_reply(status.user), " ",
-          link_to_direct(status.user), " ",
-          link_to_profile(status.user)
-        )
+        if not you?(status.user)
+          @menus[status.id] = m.para(
+            link_to_reply(status.user), " ",
+            link_to_direct(status.user)
+          )
+        end
       end
       # menu_toggle(status).call
     end
+  end
+  
+  def you?(user)
+    @cred[0] == user.screen_name
   end
   
   def avatar_for(user)
