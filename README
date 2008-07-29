@@ -2,7 +2,11 @@
 
 Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about Shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
 
-Currently, to use Twitter Shoes, you must create a file named ".twitter_cred" in your user's home directory with two lines: username and password. This setup will be done in the app in the near future.
+= Installation and Setup
+
+Currently, to use Aglet, you must create a file named ".aglet_cred" in your user's home directory with two lines: username and password. This setup will be done in the app later once some issues with certain UI components are worked out in Shoes. I can probably also learn a different way to approach it. In due time!
+
+Also, I am having errors with the packaged version of the app, at least on OS X. So, for now you need to clone a copy of the repo and run that with the shoes command or Shoes.app.
 
 = Contributors
 
@@ -11,7 +15,7 @@ Currently, to use Twitter Shoes, you must create a file named ".twitter_cred" in
 = Thanks to..
 
   * _why, for starting Shoes and doing loads of awesome work besides!
-  * Bluebie, for being very helpful in #shoes on irc.freenode.net
+  * the crowd in #shoes on irc.freenode.net for being very helpful
   * @rm for the name "aglet"
 
 = License
