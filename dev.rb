@@ -1,16 +1,11 @@
 module TwitterShoes
-### SOME STUFF FOR LOCAL DEVELOPMENT!
 module Dev
-  def self.extended(app)
-    if app.testing_ui?
-      def update_fixture_file(timeline)
-        File.open(timeline_fixture_path, "w+") { |f| f.puts timeline.to_yaml }
-      end
-      
-      def timeline_fixture_path
-        File.join Dir.pwd, "timeline.yml"
-      end
-    end
+  def update_fixture_file(timeline)
+    File.open(timeline_fixture_path, "w+") { |f| f.puts timeline.to_yaml }
+  end
+  
+  def timeline_fixture_path
+    File.join Dir.pwd, "timeline.yml"
   end
   
   # return true for certain side effects.

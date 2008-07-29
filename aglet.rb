@@ -12,38 +12,37 @@ helpers
 ).each { |x| require x }
 
 Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false do
+  @top = self
+  
   extend TwitterShoes::Dev, TwitterShoes::Errors, TwitterShoes::Helpers
   
   cred_path = File.expand_path "~/.twittershoes_cred"
   
   @twitter = ::Twitter::Base.new *File.readlines(cred_path).map(&:strip)
   
-  @friends = twitter_api { @twitter.friends.map(&:name) }
-  
-  ###
-  
-  def fail_whale_orange
-    rgb 241,90,34
-  end
-  
-  def fail_whale_blue
-    rgb 108, 197, 195
-  end
+  # @friends = twitter_api { @twitter.friends.map(&:name) }
   
   ###
   
   def load_timeline
     @timeline = (
       if testing_ui?
-        YAML.load_file(timeline_fixture_path)
+        update_fixture_file load_timeline_from_api if not File.exist?(timeline_fixture_path)
+        load_timeline_from_cache
       else
         load_timeline_from_api
       end || []
     ).first(10)
+    
+    update_fixture_file @timeline
   end
   
   def load_timeline_from_api
     twitter_api { @twitter.timeline }
+  end
+  
+  def load_timeline_from_cache
+    YAML.load_file timeline_fixture_path
   end
   
   @first_load = true
@@ -53,21 +52,19 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
     load_timeline
     
     if @timeline.any?
-      background white
-      @timeline_stack.clear do
-        # TODO add status about over capacity to top of list instead of alert
-        populate_timeline
-      end
+      @timeline_stack.clear { populate_timeline }
     
     elsif not @first_load
       warn "timeline reloaded empty, Twitter is probably over capacity"
     
     else
-      alert "Twitter is over capacity at the moment, " +
+      msg = "Twitter is over capacity at the moment, " <<
         "but the timeline will continue to attempt to reload in the background."
+      info  msg
+      alert msg
       
-      background fail_whale_orange
-      @timeline_stack.clear { twitter_down! }
+      @timeline = [fail_status] + load_timeline_from_cache
+      @timeline_stack.clear { populate_timeline }
     
     end
     
@@ -93,27 +90,27 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
     reset_status
   end
   
+  def menu_toggle(status)
+    proc { @menus[status.id].toggle }
+  end
+  
   # Layout for timeline
   def populate_timeline
+    @menus = {}
     @timeline.each do |status|
       flow :margin => 0 do
         zebra_stripe gray(0.9)
-        # time_ago_bg status.created_at
         
         stack :width => -(45 + gutter) do
           para autolink(status.text), :size => 9, :margin => 5
-          flow :margin => [5,0,0,0] do
-            with_options :size => 7, :margin => [0,0,5,5] do |menu|
-              menu.para link(time_ago(status.created_at), :click => "http://twitter.com/statuses/#{status.id}")
-              menu.para link("reply")  { @status.text += "@#{status.user.screen_name} " ; @status.focus }
-              menu.para link("direct") { @status.text += "d #{status.user.screen_name} "; @status.focus }
-            end
-          end
+          menu_for status
         end
         
+        # hover &menu_toggle(status)
+        # leave &menu_toggle(status)
+        
         stack :width => 45 do
-          image status.user.profile_image_url,
-            :width => 45, :height => 45, :radius => 5, :margin => [5,5,5,3]
+          avatar_for status.user
         end
       end
     end
@@ -134,21 +131,19 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
   #   File.open(cred_path, "w+") { |f| f.puts name, pass }
   # end
   
-  if testing_ui? and not File.exist?(timeline_fixture_path)
-    update_fixture_file load_timeline_from_api
-  end
-  
   ###
+  
+  background white
   
   # Longer entries will be published in full but truncated for mobile devices.
   recommended_status_length = 140
   
-  flow :margin => [0,0,0,5] do
+  @form = flow :margin => [0,0,0,5] do
     background fail_whale_blue
     
     @status = edit_box :width => -(55 + gutter), :height => 35, :margin => [5,5,5,0] do |s|
-      if s.text[-1] == ?\n
-        @submit.click
+      if s.text.chomp!
+        update_status
       else
         @counter.text = (size = s.text.size).zero? ? "" : size
         @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
