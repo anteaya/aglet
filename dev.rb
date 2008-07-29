@@ -1,4 +1,4 @@
-module TwitterShoes
+module Aglet
 module Dev
   def update_fixture_file(timeline)
     File.open(timeline_fixture_path, "w+") { |f| f.puts timeline.to_yaml }

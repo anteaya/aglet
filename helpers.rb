@@ -1,4 +1,4 @@
-module TwitterShoes
+module Aglet
 module Helpers
   def fail_whale_orange
     rgb 241,90,34

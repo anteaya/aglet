@@ -1,4 +1,4 @@
-module TwitterShoes
+module Aglet
 ## ERRRRRORRRRRR HANDLLLLLINNNGG!! (say in the voice of Jon Lovitz as The Thespian)
 module Errors
   def twitter_api(&block)

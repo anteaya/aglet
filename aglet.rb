@@ -14,7 +14,7 @@ helpers
 Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false do
   @top = self
   
-  extend TwitterShoes::Dev, TwitterShoes::Errors, TwitterShoes::Helpers
+  extend Aglet::Dev, Aglet::Errors, Aglet::Helpers
   
   cred_path = File.expand_path "~/.twittershoes_cred"
   
