@@ -70,6 +70,8 @@ module Helpers
     end
   end
   
+  ###
+  
   def at_pattern
     "[^\s!?.]+"
   end
@@ -86,9 +88,13 @@ module Helpers
     end
   end
   
+  # A @username token might be grabbed with an attached piece of punctuation or similar
+  # when parsing the status text for linkable tokens.
   def username_from(at_token)
     at_token[1..-1].sub Regexp.new(at_pattern), ""
   end
+  
+  ###
   
   # Based on distance_of_time_in_words from Rails' ActionView.
   def time_ago(from, to = Time.new, include_seconds = false)
