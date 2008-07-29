@@ -69,9 +69,9 @@ module Helpers
   def autolink(status)
     status.strip.scan(/(\S+)(\s+)?/).flatten.map do |token|
       case token
-      when /@#{at_pattern}/
+      when /^@#{at_pattern}$/
         link token, :click => "http://twitter.com/#{username_from token}"
-      when /(http:\/\/|www\.)\S+/
+      when /^(http:\/\/|www\.)\S+$/
         link token, :click => "#{"http://" if $1 =~ /www/}#{token}"
       else token
       end

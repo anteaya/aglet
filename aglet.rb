@@ -10,12 +10,14 @@ colors
 dev
 errors
 helpers
+
+grr
 ).each { |x| require x }
 
 Shoes.app :title => "Aglet", :width => 275, :height => 565, :resizable => false do
   @top = self
   
-  extend Aglet::Colors, Aglet::Dev, Aglet::Errors, Aglet::Helpers
+  extend Aglet::Colors, Aglet::Dev, Aglet::Errors, Aglet::Helpers, Aglet::Grr
   
   ###
   
