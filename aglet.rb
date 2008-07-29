@@ -6,6 +6,7 @@ end
 timeout
 twitter
 
+colors
 dev
 errors
 helpers
@@ -14,7 +15,7 @@ helpers
 Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false do
   @top = self
   
-  extend Aglet::Dev, Aglet::Errors, Aglet::Helpers
+  extend Aglet::Dev, Aglet::Errors, Aglet::Helpers, Aglet::Colors
   
   ###
   

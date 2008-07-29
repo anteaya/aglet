@@ -1,15 +1,5 @@
 module Aglet
 module Helpers
-  def fail_whale_orange
-    rgb 241, 90, 34
-  end
-  
-  def fail_whale_blue
-    rgb 108, 197, 195
-  end
-  
-  ###
-  
   def link_to_status(status)
     link time_ago(status.created_at),
       :click => "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"
