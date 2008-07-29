@@ -15,7 +15,7 @@ helpers
 Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false do
   @top = self
   
-  extend Aglet::Dev, Aglet::Errors, Aglet::Helpers, Aglet::Colors
+  extend Aglet::Colors, Aglet::Dev, Aglet::Errors, Aglet::Helpers
   
   ###
   
@@ -64,9 +64,12 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
   
   @first_load = true
   
-  def reload_timeline
+  def reload_timeline(new_status = nil)
     info "reloading timeline"
     load_timeline
+    
+    # Work around public timeline updates being limited to once a minute.
+    @timeline = [new_status] + @timeline[0..-2] if new_status
     
     if @timeline.any?
       @timeline_stack.clear { populate_timeline }
@@ -90,7 +93,7 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
   
   def update_status
     if testing_ui?
-      status = ::Twitter::Status.new do |s|
+      status = Twitter::Status.new do |s|
         s.text = @status.text
         s.user = @timeline.first.user
         s.created_at = Time.new
@@ -99,11 +102,12 @@ Shoes.app :title => "aglet", :width => 275, :height => 565, :resizable => false 
       
       timeline = [status] + @timeline[0..-2]
       update_fixture_file timeline
+      reload_timeline
     else
-      twitter_api { @twitter.update @status.text }
+      status = twitter_api { @twitter.update @status.text }
+      reload_timeline status
     end
     
-    reload_timeline
     reset_status
   end
   
