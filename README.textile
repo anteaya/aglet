@@ -1,6 +1,6 @@
 h1. Aglet - a Twitter client with Shoes on
 
-!>http://github.com/greatseth/aglet/tree/master%2Fwhale.png?raw=true!
+!>{border: 10px solid #fff}http://github.com/greatseth/aglet/tree/master%2Fwhale.png?raw=true!
 
 Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about Shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
 
