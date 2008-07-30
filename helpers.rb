@@ -73,6 +73,10 @@ module Helpers
     end
   end
   
+  def label(text, options = {}, &block)
+    para text.upcase, { :size => 8 }.merge(options)
+  end
+  
   ###
   
   def at_pattern

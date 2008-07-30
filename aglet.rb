@@ -23,33 +23,36 @@ class Aglet < Shoes
   
   ###
   
-  def load_timeline
-    @timeline = (
-      if testing_ui?
-        update_fixture_file load_timeline_from_api if not File.exist?(timeline_fixture_path)
-        load_timeline_from_cache
-      else
-        load_timeline_from_api
-      end || []
-    ).first(10)
+  def load_timeline(thing = nil)
+    @timeline = if thing == :public
+      load_timeline_from_api :public
+    elsif thing.is_a? Twitter::Status
+      timeline = load_timeline_from_api
+      timeline = [thing] + timeline if not thing == timeline.first
+      timeline
+    elsif testing_ui?
+      update_fixture_file load_timeline_from_api if not File.exist?(timeline_fixture_path)
+      load_timeline_from_cache
+    else
+      load_timeline_from_api
+    end || []
+    
+    @timeline = @timeline.first(10)
     
     update_fixture_file @timeline
   end
   
-  def load_timeline_from_api
-    twitter_api { @twitter.timeline }
+  def load_timeline_from_api(which = :friends)
+    twitter_api { @twitter.timeline which }
   end
   
   def load_timeline_from_cache
     YAML.load_file timeline_fixture_path
   end
   
-  def reload_timeline(new_status = nil)
+  def reload_timeline(thing = nil)
     info "reloading timeline"
-    load_timeline
-    
-    # Work around public timeline updates being limited to once a minute.
-    @timeline = [new_status] + @timeline[0..-2] if new_status
+    load_timeline thing
     
     if @timeline.any?
       @timeline_stack.clear { populate_timeline }
@@ -131,18 +134,18 @@ class Aglet < Shoes
     
     background fail_whale_blue
     
-    stack do
-      para "username"
-      @username = edit_line @cred.first
-    end
+    para "SETUP"
     
-    stack do
-      para "password"
+    stack :margin_bottom => 5 do
+      label "username"
+      @username = edit_line @cred.first
+    
+      label "password"
       @password = password_line @cred.last
     end
     
     flow do
-      button "save" do
+      button "save", :margin_right => 5 do
         File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.password_text }
         info  "Saved #{@username.text.inspect} and #{@password.password_text.inspect}"
         alert "Thank you, this info is now stored at #{@cred_path}"
@@ -192,9 +195,16 @@ class Aglet < Shoes
     # TODO extract footer styles
     flow :height => 28 do
       background black
-      with_options :stroke => white, :size => 8 do |m|
-        check
-        @collapsed = m.para "collapsed"
+      with_options :stroke => white, :size => 8, :margin => [0,4,5,0] do |m|
+        @collapsed = check do |c|
+          # TODO
+        end
+        m.para "collapsed"
+        
+        @public = check do |c|
+          reload_timeline((:public if c.checked?))
+        end
+        m.para "public"
         
         m.para " | ",
           link("setup", :click => "/setup")
