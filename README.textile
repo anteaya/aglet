@@ -6,7 +6,7 @@ Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it anno
 
 h2. Installation and Setup
 
-Currently, to use Aglet, you must create a file named ".aglet_cred" in your user's home directory with two lines: username and password. This setup will be done in the app later once some issues with certain UI components are worked out in Shoes. I can probably also learn a different way to approach it. In due time!
+When saving your user credentials, you will probably notice that switching to the timeline doesn't exactly work. Restart the app and you are good to go. Sorry, looking into that one.
 
 Also, I am having errors with the packaged version of the app, at least on OS X. So, for now you need to clone a copy of the repo and run that with the shoes command or Shoes.app.
 
