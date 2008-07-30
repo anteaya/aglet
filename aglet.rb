@@ -164,7 +164,7 @@ class Aglet < Shoes
       end
       
       button "cancel" do
-        timeline
+        # dunno how to make buttons go to urls
       end
     end
   end
