@@ -2,21 +2,25 @@ h1. Aglet - a Twitter client with Shoes on
 
 !>{border: 10px solid #fff}http://github.com/greatseth/aglet/tree/master%2Fwhale.png?raw=true!
 
-Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about Shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
+Hallo. I was using Tweetr, one of many Twitter clients built on AIR. But it annoyed me. And I was curious about "Shoes":http://github.com/why/shoes. I like shoes. And Shoes is pretty good, too. Anyway, here is another Twitter client for your desk topping.
 
 h2. Installation and Setup
 
-When saving your user credentials, you will probably notice that switching to the timeline doesn't exactly work. Restart the app and you are good to go. Sorry, looking into that one.
+You must have Shoes setup and run the app via Shoes. I am having errors with the packaged version of the app, at least on OS X. So, for now you need to clone a copy of the repo and run aglet.rb with the shoes command or Shoes.app.
+  
+  git clone git://github.com/greatseth/aglet.git
+  cd aglet
+  shoes aglet.rb
 
-Also, I am having errors with the packaged version of the app, at least on OS X. So, for now you need to clone a copy of the repo and run that with the shoes command or Shoes.app.
+When saving your user credentials, you will probably notice that switching to the timeline doesn't exactly work. Restart the app and you are good to go. Sorry, looking into that one.
 
 h2. Contributors
 
-  * Seth Thomas Rasmussen http://greatseth.com
+  * "Seth Thomas Rasmussen":http://greatseth.com "http://greatseth.com":http://greatseth.com
 
 h2. Thanks to..
 
-  * _why, for starting Shoes and doing loads of awesome work besides!
+  * "_why":http://github.com/why, for starting Shoes and doing loads of awesome work besides!
   * the crowd in #shoes on irc.freenode.net for being very helpful
   * "@rm":http://twitter.com/rm for the name "aglet"
 
