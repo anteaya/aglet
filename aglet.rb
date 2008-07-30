@@ -44,8 +44,6 @@ class Aglet < Shoes
     YAML.load_file timeline_fixture_path
   end
   
-  @first_load = true
-  
   def reload_timeline(new_status = nil)
     info "reloading timeline"
     load_timeline
@@ -55,23 +53,11 @@ class Aglet < Shoes
     
     if @timeline.any?
       @timeline_stack.clear { populate_timeline }
-    
-    else # if not @first_load
+    else
       warn "timeline reloaded empty, Twitter is probably over capacity"
-    #   @timeline_stack.clear { twitter_down! }
-    # 
-    # else
-    #   msg = "Twitter is over capacity at the moment, " <<
-    #     "but the timeline will continue to attempt to reload in the background."
-    #   info  msg
-    #   alert msg
-      
       @timeline = [fail_status] + load_timeline_from_cache
       @timeline_stack.clear { populate_timeline }
-    
     end
-    
-    @first_load = false
   end
   
   def update_status
