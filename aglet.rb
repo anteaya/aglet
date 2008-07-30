@@ -61,6 +61,8 @@ class Aglet < Shoes
       @timeline = [fail_status] + load_timeline_from_cache
       @timeline_stack.clear { populate_timeline }
     end
+    
+    growl @timeline.first
   end
   
   def update_status
