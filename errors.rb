@@ -15,6 +15,14 @@ module Errors
     [Timeout::Error, Twitter::CantConnect]
   end
   
+  def twitter_down!
+    background fail_whale_orange
+    image "whale.png", :width => 1.0, :height => 200
+    para "Too many tweets!", :align => "center"
+    para "Sorry, Twitter is over capacity. Wait, though, and ",
+      "the timeline will reload as soon as it can.", :align => "center"
+  end
+  
   def fail_status
     Twitter::Status.new do |s|
       s.text = "Twitter is over capacity. Timeline will continue to attempt to reload."

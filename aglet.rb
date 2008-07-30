@@ -58,6 +58,7 @@ class Aglet < Shoes
     
     elsif not @first_load
       warn "timeline reloaded empty, Twitter is probably over capacity"
+      @timeline_stack.clear { twitter_down! }
     
     else
       msg = "Twitter is over capacity at the moment, " <<
@@ -130,12 +131,20 @@ class Aglet < Shoes
   ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
   
   def startup
-    @cred_path = File.expand_path("~/.aglet_cred")
-    @cred = File.exist?(@cred_path) ? File.readlines(@cred_path).map(&:strip) : []
+    setup_cred
     @cred.empty? ? setup : timeline
   end
   
+  def setup_cred
+    @cred_path = File.expand_path("~/.aglet_cred")
+    @cred = File.exist?(@cred_path) ? File.readlines(@cred_path).map(&:strip) : []
+  end
+  
   def setup
+    setup_cred
+    
+    background fail_whale_blue
+    
     stack do
       para "username"
       @username = edit_line @cred.first
@@ -143,15 +152,20 @@ class Aglet < Shoes
     
     stack do
       para "password"
-      @password = edit_line "*" * @cred.last.to_s.size do |pw|
-        pw.text = "*" * pw.text.size
-      end
+      @password = edit_line @cred.last
     end
     
-    button "save" do
-      File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.text }
-      info  "Saved #{@username.text.inspect} and #{@password.text.inspect}"
-      alert "Thank you, this info is now stored at #{@cred_path}"
+    flow do
+      button "save" do
+        File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.text }
+        info  "Saved #{@username.text.inspect} and #{@password.text.inspect}"
+        alert "Thank you, this info is now stored at #{@cred_path}"
+        timeline
+      end
+      
+      button "cancel" do
+        timeline
+      end
     end
   end
   
@@ -184,13 +198,13 @@ class Aglet < Shoes
       @counter = strong ""
       para @counter, :size => 8, :margin => [0,8,0,0], :stroke => @counter_default_stroke
     end
-
+    
     @timeline_stack = stack :height => 500, :scroll => true
-
+    
+    # TODO extract footer styles
     stack :height => 28 do
       background black
-      # para "©2008 ", link("GREATsethPECTATIONS", :click => "http://greatseth.com", :hover => false),
-      #       :stroke => white, :margin => [0,5,0,0], :align => "center"
+      para link("setup", :click => "/setup"), :size => 8
     end
 
     ###
