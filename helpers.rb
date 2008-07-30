@@ -67,6 +67,9 @@ module Helpers
   end
   
   def autolink(status)
+    # XXX temp hack for twitter api bug with double-escaping
+    status = CGI.unescapeHTML(CGI.unescapeHTML(status))
+    
     status.strip.scan(/(\S+)(\s+)?/).flatten.map do |token|
       case token
       when /^@#{at_pattern}$/
