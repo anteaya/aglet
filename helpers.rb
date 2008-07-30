@@ -59,6 +59,19 @@ module Helpers
     end
   end
   
+  # Only supports one password field per screen
+  # TODO subclass Shoes::EditLine
+  def password_line(value, options = {})
+    edit_line value, options do |pw|
+      def pw.password_text
+        @password_text ||= ""
+      end
+      
+      pw.password_text << pw.text[-1]
+      pw.text = "*" * pw.text.size
+    end
+  end
+  
   ###
   
   def at_pattern

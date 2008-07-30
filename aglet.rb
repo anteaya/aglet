@@ -152,13 +152,13 @@ class Aglet < Shoes
     
     stack do
       para "password"
-      @password = edit_line @cred.last
+      @password = password_line @cred.last
     end
     
     flow do
       button "save" do
-        File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.text }
-        info  "Saved #{@username.text.inspect} and #{@password.text.inspect}"
+        File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.password_text }
+        info  "Saved #{@username.text.inspect} and #{@password.password_text.inspect}"
         alert "Thank you, this info is now stored at #{@cred_path}"
         visit "/timeline"
       end
