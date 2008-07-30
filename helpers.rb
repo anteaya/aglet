@@ -67,7 +67,7 @@ module Helpers
   end
   
   def autolink(status)
-    # XXX temp hack for twitter api bug with double-escaping
+    # XXX temp hack for bug about too much escaping :\
     status = CGI.unescapeHTML(CGI.unescapeHTML(status))
     
     status.strip.scan(/(\S+)(\s+)?/).flatten.map do |token|
