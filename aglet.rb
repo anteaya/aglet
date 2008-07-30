@@ -80,9 +80,9 @@ class Aglet < Shoes
     reset_status
   end
   
-  def menu_toggle(status)
-    proc { @menus[status.id].toggle }
-  end
+  # def menu_toggle(status)
+  #   proc { @menus[status.id].toggle }
+  # end
   
   # Layout for timeline
   def populate_timeline
