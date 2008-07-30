@@ -1,4 +1,3 @@
-module Aglet
 module Helpers
   def link_to_status(status)
     link time_ago(status.created_at),
@@ -159,5 +158,4 @@ module Helpers
   #   
   #   background bg
   # end
-end
 end

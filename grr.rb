@@ -1,9 +1,8 @@
-module Aglet
 module Grr
-  def self.extended(base)
-    base.instance_eval do
+  def self.included(base)
+    base.class_eval do
       if `which growlnotify` =~ / no /
-        undef :growl
+        remove_method :growl
         info "growl not found on your system. app not extended with Grr."
       end
     end
@@ -12,5 +11,4 @@ module Grr
   def growl(status)
     `growlnotify -m #{status.text}`
   end
-end
 end

@@ -14,32 +14,12 @@ helpers
 grr
 ).each { |x| require x }
 
-Shoes.app :title => "Aglet", :width => 275, :height => 565, :resizable => false do
-  @top = self
+class Aglet < Shoes
+  url "/",         :startup
+  url "/setup",    :setup
+  url "/timeline", :timeline
   
-  extend Aglet::Colors, Aglet::Dev, Aglet::Errors, Aglet::Helpers, Aglet::Grr
-  
-  ###
-  
-  @cred_path = File.expand_path("~/.aglet_cred")
-  
-  if not File.exist?(@cred_path)
-    # name = ask "user name?"
-    # pass = ask "password?"
-    # File.open(@cred_path, "w+") { |f| f.puts name, pass }
-    # alert "Thank you, this info is now stored at #{@cred_path}"
-    
-    alert "Sorry, but you must create a file at #{@cred_path} with two lines:\n\nUSERNAME\nPASSWORD\n\nThis app is young. We will fix that some day!"
-    exit!
-  end
-  
-  @cred = File.readlines(@cred_path).map(&:strip)
-  
-  ###
-  
-  @twitter = Twitter::Base.new *@cred
-  
-  # @friends = twitter_api { @twitter.friends.map(&:name) }
+  include Colors, Dev, Errors, Helpers, Grr
   
   ###
   
@@ -149,46 +129,79 @@ Shoes.app :title => "Aglet", :width => 275, :height => 565, :resizable => false 
   
   ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
   
-  background white
+  def startup
+    @cred_path = File.expand_path("~/.aglet_cred")
+    @cred = File.exist?(@cred_path) ? File.readlines(@cred_path).map(&:strip) : []
+    @cred.empty? ? setup : timeline
+  end
   
-  # Longer entries will be published in full but truncated for mobile devices.
-  recommended_status_length = 140
-  
-  @form = flow :margin => [0,0,0,5] do
-    background fail_whale_blue
+  def setup
+    stack do
+      para "username"
+      @username = edit_line @cred.first
+    end
     
-    @status = edit_box :width => -(55 + gutter), :height => 35, :margin => [5,5,5,0] do |s|
-      if s.text.chomp!
-        update_status
-      else
-        @counter.text = (size = s.text.size).zero? ? "" : size
-        @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
+    stack do
+      para "password"
+      @password = edit_line "*" * @cred.last.to_s.size do |pw|
+        pw.text = "*" * pw.text.size
       end
     end
     
-    @submit = button "»", :margin => 0 do
-      update_status
+    button "save" do
+      File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.text }
+      info  "Saved #{@username.text.inspect} and #{@password.text.inspect}"
+      alert "Thank you, this info is now stored at #{@cred_path}"
     end
+  end
+  
+  def timeline
+    @twitter = Twitter::Base.new *@cred
+    # @friends = twitter_api { @twitter.friends.map(&:name) }
     
-    @counter_default_stroke = white
-    @counter = strong ""
-    para @counter, :size => 8, :margin => [0,8,0,0], :stroke => @counter_default_stroke
-  end
-  
-  @timeline_stack = stack :height => 500, :scroll => true
-  
-  stack :height => 28 do
-    background black
-    # para "©2008 ", link("GREATsethPECTATIONS", :click => "http://greatseth.com", :hover => false),
-    #       :stroke => white, :margin => [0,5,0,0], :align => "center"
-  end
-  
-  ###
-  
-  reload_timeline
-  reset_status
-  
-  every 60 do
+    background white
+
+    # Longer entries will be published in full but truncated for mobile devices.
+    recommended_status_length = 140
+
+    @form = flow :margin => [0,0,0,5] do
+      background fail_whale_blue
+
+      @status = edit_box :width => -(55 + gutter), :height => 35, :margin => [5,5,5,0] do |s|
+        if s.text.chomp!
+          update_status
+        else
+          @counter.text = (size = s.text.size).zero? ? "" : size
+          @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
+        end
+      end
+
+      @submit = button "»", :margin => 0 do
+        update_status
+      end
+
+      @counter_default_stroke = white
+      @counter = strong ""
+      para @counter, :size => 8, :margin => [0,8,0,0], :stroke => @counter_default_stroke
+    end
+
+    @timeline_stack = stack :height => 500, :scroll => true
+
+    stack :height => 28 do
+      background black
+      # para "©2008 ", link("GREATsethPECTATIONS", :click => "http://greatseth.com", :hover => false),
+      #       :stroke => white, :margin => [0,5,0,0], :align => "center"
+    end
+
+    ###
+
     reload_timeline
+    reset_status
+
+    every 60 do
+      reload_timeline
+    end
   end
 end
+
+Shoes.app :title => "Aglet", :width => 275, :height => 565, :resizable => false

@@ -1,4 +1,3 @@
-module Aglet
 ## ERRRRRORRRRRR HANDLLLLLINNNGG!! (say in the voice of Jon Lovitz as The Thespian)
 module Errors
   def twitter_api(&block)
@@ -50,5 +49,4 @@ module Errors
     para "Twitter is down down down, probably just over capacity right now. ",
       "Try again soon!"
   end
-end
 end

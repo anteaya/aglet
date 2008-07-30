@@ -1,4 +1,3 @@
-module Aglet
 module Colors
   def fail_whale_orange
     rgb 241, 90, 34
@@ -7,5 +6,4 @@ module Colors
   def fail_whale_blue
     rgb 108, 197, 195
   end
-end
 end
