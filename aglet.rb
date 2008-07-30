@@ -62,7 +62,7 @@ class Aglet < Shoes
       @timeline_stack.clear { populate_timeline }
     end
     
-    growl @timeline.first
+    growl_latest
   end
   
   def update_status
