@@ -28,7 +28,8 @@ module Helpers
     flow :margin => [5,0,0,0] do
       with_options :size => 7, :margin => [0,0,5,5] do |m|
         m.para link_to_status(status)
-        if not you?(status.user)
+        # TODO extend Twitter::Status with #fail?
+        if not you?(status.user) and not status.user.screen_name == "failwhale"
           @menus[status.id] = m.para(
             link_to_reply(status.user), " ",
             link_to_direct(status.user)

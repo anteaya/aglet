@@ -27,15 +27,15 @@ module Errors
     Twitter::Status.new do |s|
       s.text = "Twitter is over capacity. Timeline will continue to attempt to reload."
       s.user = fail_user
-      s.created_at = Time.new
+      s.created_at = Time.new.to_s
     end
   end
   
   def fail_user
     Twitter::User.new do |u|
       u.profile_image_url = "whale.png"
-      u.name = "fail whale"
-      u.screen_name = nil
+      u.name = "failwhale"
+      u.screen_name = "failwhale"
       u.location = "an octopuses garden, in the shade"
       u.url = "http://blog.twitter.com"
       u.profile_background_color = fail_whale_orange
