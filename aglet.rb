@@ -160,16 +160,18 @@ class Aglet < Shoes
         File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.text }
         info  "Saved #{@username.text.inspect} and #{@password.text.inspect}"
         alert "Thank you, this info is now stored at #{@cred_path}"
-        timeline
+        visit "/timeline"
       end
       
       button "cancel" do
-        # dunno how to make buttons go to urls
+        visit "/timeline"
       end
     end
   end
   
   def timeline
+    setup_cred
+    
     @twitter = Twitter::Base.new *@cred
     # @friends = twitter_api { @twitter.friends.map(&:name) }
     
