@@ -202,9 +202,15 @@ class Aglet < Shoes
     @timeline_stack = stack :height => 500, :scroll => true
     
     # TODO extract footer styles
-    stack :height => 28 do
+    flow :height => 28 do
       background black
-      para link("setup", :click => "/setup"), :size => 8
+      with_options :stroke => white, :size => 8 do |m|
+        check
+        @collapsed = m.para "collapsed"
+        
+        m.para " | ",
+          link("setup", :click => "/setup")
+      end
     end
 
     ###
