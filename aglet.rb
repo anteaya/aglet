@@ -158,6 +158,8 @@ class Aglet < Shoes
     end
   end
   
+  ###
+  
   def timeline
     setup_cred
     
@@ -171,7 +173,7 @@ class Aglet < Shoes
 
     @form = flow :margin => [0,0,0,5] do
       background fail_whale_blue
-
+      
       @status = edit_box :width => -(55 + gutter), :height => 35, :margin => [5,5,5,0] do |s|
         if s.text.chomp!
           update_status
@@ -180,11 +182,11 @@ class Aglet < Shoes
           @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
         end
       end
-
-      @submit = button "»", :margin => 0 do
-        update_status
-      end
-
+      
+      # @submit = button "»", :margin => 0 do
+      #   update_status
+      # end
+      
       @counter_default_stroke = white
       @counter = strong ""
       para @counter, :size => 8, :margin => [0,8,0,0], :stroke => @counter_default_stroke
@@ -217,6 +219,7 @@ class Aglet < Shoes
     reset_status
 
     every 60 do
+      # TODO does not reload :public
       reload_timeline
     end
   end
