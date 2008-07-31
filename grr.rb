@@ -19,7 +19,7 @@ module Grr
     
     statuses = statuses[0..(GROWL_LIMIT - 1)] if too_many
     
-    statuses.each { |s| growl s.user.screen_name, s.text }
+    statuses.each { |s| growl s.text, s.user.screen_name }
     
     growl "You have #{statuses.size - GROWL_LIMIT} more new updates!" if too_many
     
