@@ -21,7 +21,7 @@ class Aglet < Shoes
   
   include Colors, Dev, Errors, Helpers, Grr
   
-  ###
+  ### TODO move all this timeline handling stuff out somewhere else
   
   def load_timeline(thing = nil)
     @timeline = if thing == :public
@@ -85,10 +85,6 @@ class Aglet < Shoes
     reset_status
   end
   
-  # def menu_toggle(status)
-  #   proc { @menus[status.id].toggle }
-  # end
-  
   # Layout for timeline
   def populate_timeline
     @menus = {}
@@ -100,9 +96,6 @@ class Aglet < Shoes
           para autolink(status.text), :size => 9, :margin => 5
           menu_for status
         end
-        
-        # hover &menu_toggle(status)
-        # leave &menu_toggle(status)
         
         stack :width => 45 do
           avatar_for status.user
@@ -196,8 +189,7 @@ class Aglet < Shoes
     
     @timeline_stack = stack :height => 500, :scroll => true
     
-    # TODO extract footer styles
-    flow :height => 28 do
+    @footer = flow :height => 28 do
       background black
       with_options :stroke => white, :size => 8, :margin => [0,4,5,0] do |m|
         @collapsed = check do |c|
