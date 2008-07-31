@@ -1,9 +1,11 @@
 Shoes.setup do
   gem "twitter"
+  gem "htmlentities"
 end
 
 %w(
 timeout
+htmlentities
 twitter
 
 colors
@@ -97,7 +99,7 @@ class Aglet < Shoes
         zebra_stripe gray(0.9)
         
         stack :width => -(45 + gutter) do
-          para autolink(status.text), :size => 9, :margin => 5
+          para autolink(@htmlentities.decode(status.text)), :size => 9, :margin => 5
           menu_for status
         end
         
@@ -161,6 +163,8 @@ class Aglet < Shoes
   
   def timeline
     setup_cred
+    
+    @htmlentities = HTMLEntities.new
     
     @twitter = Twitter::Base.new *@cred
     # @friends = twitter_api { @twitter.friends.map(&:name) }
