@@ -12,7 +12,8 @@ module Grr
   
   def growl_latest
     statuses = @timeline.select do |s|
-      @latest_growl ? (s.id > @latest_growl) : true
+      # XXX Apparently not always an ID? wtf?
+      @latest_growl ? (s.id && s.id > @latest_growl.id) : true
     end
     
     too_many = statuses.size > GROWL_LIMIT

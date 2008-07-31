@@ -23,12 +23,16 @@ class Aglet < Shoes
   
   ### TODO move all this timeline handling stuff out somewhere else
   
-  def load_timeline(thing = nil)
-    @timeline = if thing == :public
-      load_timeline_from_api :public
-    elsif thing.is_a? Twitter::Status
+  def load_timeline
+    @timeline = if @which_timeline
+      load_timeline_from_api @which_timeline
+    elsif @new_status
       timeline = load_timeline_from_api
-      timeline = [thing] + timeline if not thing == timeline.first
+      if timeline.map(&:id).include?(@new_status.id)
+        @new_status = nil
+      else
+        timeline = [@new_status] + timeline
+      end
       timeline
     elsif testing_ui?
       update_fixture_file load_timeline_from_api if not File.exist?(timeline_fixture_path)
@@ -50,9 +54,9 @@ class Aglet < Shoes
     YAML.load_file timeline_fixture_path
   end
   
-  def reload_timeline(thing = nil)
+  def reload_timeline
     info "reloading timeline"
-    load_timeline thing
+    load_timeline
     
     if @timeline.any?
       @timeline_stack.clear { populate_timeline }
@@ -78,8 +82,8 @@ class Aglet < Shoes
       update_fixture_file timeline
       reload_timeline
     else
-      status = twitter_api { @twitter.update @status.text }
-      reload_timeline status
+      @new_status = twitter_api { @twitter.update @status.text }
+      reload_timeline
     end
     
     reset_status
@@ -162,10 +166,10 @@ class Aglet < Shoes
     # @friends = twitter_api { @twitter.friends.map(&:name) }
     
     background white
-
+    
     # Longer entries will be published in full but truncated for mobile devices.
     recommended_status_length = 140
-
+    
     @form = flow :margin => [0,0,0,5] do
       background fail_whale_blue
       
@@ -198,7 +202,8 @@ class Aglet < Shoes
         m.para "collapsed"
         
         @public = check do |c|
-          reload_timeline((:public if c.checked?))
+          @which_timeline = (:public if c.checked?)
+          reload_timeline
         end
         m.para "public"
         
@@ -206,14 +211,13 @@ class Aglet < Shoes
           link("setup", :click => "/setup")
       end
     end
-
+    
     ###
-
+    
     reload_timeline
     reset_status
-
+    
     every 60 do
-      # TODO does not reload :public
       reload_timeline
     end
   end

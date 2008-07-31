@@ -47,6 +47,10 @@ module Helpers
   def avatar_for(user)
     image user.profile_image_url,
       :width => 45, :height => 45, :radius => 5, :margin => [5,5,5,3]
+  # Something crashing Shoes in there..
+  rescue Object => e
+    error e.message
+    fail_whale
   end
   
   ###
