@@ -24,7 +24,7 @@ h2. Thanks to..
 
   * "_why":http://github.com/why, for starting Shoes and doing loads of awesome work besides!
   * the crowd in #shoes on irc.freenode.net for being very helpful
-  * "@rm":http://twitter.com/rm for the name "aglet"
+  * "@rm":http://twitter.com/rm for the name "Aglet"
 
 h2. License
 
