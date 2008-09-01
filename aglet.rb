@@ -57,13 +57,13 @@ class Aglet < Shoes
   end
   
   def reload_timeline
-    info "reloading timeline"
+    # info "reloading timeline"
     load_timeline
     
     if @timeline.any?
       @timeline_stack.clear { populate_timeline }
     else
-      warn "timeline reloaded empty, Twitter is probably over capacity"
+      # warn "timeline reloaded empty, Twitter is probably over capacity"
       @timeline = [fail_status] + load_timeline_from_cache
       @timeline_stack.clear { populate_timeline }
     end
