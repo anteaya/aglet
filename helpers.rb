@@ -45,12 +45,24 @@ module Helpers
   end
   
   def avatar_for(user)
-    image user.profile_image_url,
+    image testing_ui? ? "superman_selleck.jpg" : user.profile_image_url,
       :width => 45, :height => 45, :radius => 5, :margin => [5,5,5,3]
   # Something crashing Shoes in there..
   rescue Object => e
     error e.message
     fail_whale
+  end
+  
+  def image(path, opts = {})
+    # scaling - http://article.gmane.org/gmane.comp.lib.shoes/1384/match=scaling+images
+    w, h = imagesize(path)
+    ow, oh = opts[:width], opts[:height]
+    if ow && !oh
+      opts[:height] = (ow.is_a? Float) ? ow : (ow * h/w.to_f).to_i
+    elsif oh && !ow
+      opts[:width]  = (oh.is_a? Float) ? oh : (oh * w/h.to_f).to_i
+    end
+    super path, opts
   end
   
   ###
