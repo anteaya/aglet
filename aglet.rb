@@ -95,20 +95,27 @@ class Aglet < Shoes
   def populate_timeline
     @menus = {}
     @timeline.each do |status|
+      @current_user = status.user
+      
       flow :margin => 0 do
         zebra_stripe gray(0.9)
         
         stack :width => -(45 + gutter) do
-          para autolink(@htmlentities.decode(status.text)), :size => 9, :margin => 5
+          # para autolink(@htmlentities.decode(status.text)), :size => 9, :margin => 5
+          para autolink(status.text), :size => 9, :margin => 5
           menu_for status
         end
         
-        stack :width => 45 do
-          avatar_for status.user
-          para link_to_profile(status.user), :size => 7, :align => "right",
-            :margin => [0,0,5,5]
+        unless @last_user and @last_user.id == @current_user.id
+          stack :width => 45 do
+            avatar_for status.user
+            para link_to_profile(status.user), :size => 7, :align => "right",
+              :margin => [0,0,5,5]
+          end
         end
       end
+      
+      @last_user = @current_user
     end
   end
   
@@ -133,30 +140,32 @@ class Aglet < Shoes
   def setup
     setup_cred
     
-    background fail_whale_blue
+    clear do
+      background fail_whale_blue
     
-    para "SETUP"
+      para "SETUP"
     
-    stack :margin_bottom => 5 do
-      label "username"
-      @username = edit_line @cred.first
+      stack :margin_bottom => 5 do
+        label "username"
+        @username = edit_line @cred.first
     
-      label "password"
-      @password = password_line @cred.last
-    end
-    
-    flow do
-      button "save", :margin_right => 5 do
-        File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.password_text }
-        info  "Saved #{@username.text.inspect} and #{@password.password_text.inspect}"
-        alert "Thank you, this info is now stored at #{@cred_path}"
-        visit "/timeline"
+        label "password"
+        @password = password_line @cred.last
       end
+    
+      flow do
+        button "save", :margin_right => 5 do
+          File.open(@cred_path, "w+") { |f| f.puts @username.text, @password.password_text }
+          info  "Saved #{@username.text.inspect} and #{@password.password_text.inspect}"
+          alert "Thank you, this info is now stored at #{@cred_path}"
+          visit "/timeline"
+        end
       
-      button "cancel" do
-        visit "/timeline"
+        button "cancel" do
+          visit "/timeline"
+        end
       end
-    end
+    end # clear
   end
   
   ###
@@ -164,57 +173,59 @@ class Aglet < Shoes
   def timeline
     setup_cred
     
-    @htmlentities = HTMLEntities.new
+    # @htmlentities = HTMLEntities.new
     
     @twitter = Twitter::Base.new *@cred
     # @friends = twitter_api { @twitter.friends.map(&:name) }
     
-    background white
+    clear do
+      background white
     
-    # Longer entries will be published in full but truncated for mobile devices.
-    recommended_status_length = 140
+      # Longer entries will be published in full but truncated for mobile devices.
+      recommended_status_length = 140
     
-    @form = flow :margin => [0,0,0,5] do
-      background fail_whale_blue
+      @form = flow :margin => [0,0,0,5] do
+        background fail_whale_blue
       
-      @status = edit_box :width => -(55 + gutter), :height => 35, :margin => [5,5,5,0] do |s|
-        if s.text.chomp!
-          update_status
-        else
-          @counter.text = (size = s.text.size).zero? ? "" : size
-          @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
+        @status = edit_box :width => -(55 + gutter), :height => 35, :margin => [5,5,5,0] do |s|
+          if s.text.chomp!
+            update_status
+          else
+            @counter.text = (size = s.text.size).zero? ? "" : size
+            @counter.style :stroke => (s.text.size > recommended_status_length ? red : @counter_default_stroke)
+          end
+        end
+      
+        # @submit = button "»", :margin => 0 do
+        #   update_status
+        # end
+      
+        @counter_default_stroke = white
+        @counter = strong ""
+        para @counter, :size => 8, :margin => [0,8,0,0], :stroke => @counter_default_stroke
+      end
+    
+      @timeline_stack = stack :height => 500, :scroll => true
+    
+      @footer = flow :height => 28 do
+        background black
+        with_options :stroke => white, :size => 8, :margin => [0,4,5,0] do |m|
+          @collapsed = check do |c|
+            # TODO
+          end
+          m.para "collapsed"
+        
+          @public = check do |c|
+            @which_timeline = (:public if c.checked?)
+            reload_timeline
+          end
+          m.para "public"
+        
+          m.para " | ",
+            link("setup", :click => "/setup")
         end
       end
-      
-      # @submit = button "»", :margin => 0 do
-      #   update_status
-      # end
-      
-      @counter_default_stroke = white
-      @counter = strong ""
-      para @counter, :size => 8, :margin => [0,8,0,0], :stroke => @counter_default_stroke
-    end
-    
-    @timeline_stack = stack :height => 500, :scroll => true
-    
-    @footer = flow :height => 28 do
-      background black
-      with_options :stroke => white, :size => 8, :margin => [0,4,5,0] do |m|
-        @collapsed = check do |c|
-          # TODO
-        end
-        m.para "collapsed"
-        
-        @public = check do |c|
-          @which_timeline = (:public if c.checked?)
-          reload_timeline
-        end
-        m.para "public"
-        
-        m.para " | ",
-          link("setup", :click => "/setup")
-      end
-    end
+    end # clear
     
     ###
     
@@ -223,7 +234,7 @@ class Aglet < Shoes
     
     every 60 do
       reload_timeline
-    end
+    end unless testing_ui?
   end
 end
 
